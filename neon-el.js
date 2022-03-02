@@ -67,9 +67,6 @@ class Neon extends HTMLElement {
   attributeChangedCallback(name, o, n) {
     switch (name) {
       case "src":
-        // [...this.shadowRoot.styleSheets[0].cssRules].find(
-        //   (rule) => rule.selectorText === ".inner"
-        // ).style.backgroundImage = `url(${this.src})`;
         this.shadowRoot.querySelector(".inner").style.backgroundImage = `url(${this.src})`;
     }
   }
