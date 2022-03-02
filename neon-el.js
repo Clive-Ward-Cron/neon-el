@@ -41,9 +41,7 @@ const css = `
 `;
 template.innerHTML = `
 ${css}
-<div class="parent">
-      <div class="colorfulShadow inner"></div>
-</div>
+<div class="colorfulShadow inner"></div>
 `;
 
 class Neon extends HTMLElement {
