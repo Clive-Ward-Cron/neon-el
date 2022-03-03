@@ -12,3 +12,5 @@ better than using:
 `` this.shadowRoot.querySelector(".inner").style.backgroundImage = `url(${this.src})`; ``
 
 or does it have any other beneficial applications in a web component?
+
+The benefit is being able to use javascript to dynamically update the pseudo elements such as neonShadow::after!

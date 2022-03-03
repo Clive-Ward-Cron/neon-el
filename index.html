@@ -6,6 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Neon Light Effect Web Component</title>
     <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
       :root {
         --black: #000;
         --white: #fff;
@@ -60,6 +65,17 @@
           transform: scale(1.2, 1.2);
         }
       }
+
+      .neon-container {
+        width: 100%;
+        height: 150px;
+      }
+
+      neon-el {
+        /* width: 150px;
+        height: 150px;
+        margin: 100px; */
+      }
     </style>
   </head>
   <body>
@@ -69,15 +85,25 @@
     </div>
 
     <h2>Component</h2>
-    <button>change</button>
-    <neon-el></neon-el>
+    <button class="change">change</button>
+    <button class="add">Add Neon</button>
+
+    <div class="neon-container">
+      <neon-el id="start"></neon-el>
+    </div>
 
     <script src="./neon-el.js" type="module"></script>
     <script>
-      const btn = document.querySelector("button");
-      const neon = document.querySelector("neon-el");
-      btn.addEventListener("click", () => {
+      const changeBtn = document.querySelector(".change");
+      const addBtn = document.querySelector(".add");
+      const container = document.querySelector(".neon-container");
+      const neon = document.querySelector("#start");
+      changeBtn.addEventListener("click", () => {
         neon.src = "./img/apple-touch-icon.png";
+      });
+      addBtn.addEventListener("click", () => {
+        const newNeon = document.createElement("neon-el");
+        container.appendChild(newNeon);
       });
     </script>
   </body>
