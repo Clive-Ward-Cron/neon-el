@@ -1,6 +1,6 @@
 const template = document.createElement("template");
 
-const html = `<div class="neonShadow inner"></div>`;
+const html = `<div class="neonShadow neon"></div>`;
 
 class Neon extends HTMLElement {
   static get observedAttributes() {
@@ -17,7 +17,7 @@ class Neon extends HTMLElement {
   #filter = `drop-shadow(0px 0px 10px rgba(0, 0, 0, 0.5)) blur(${this.#default.blurAmt}px)`;
 
   #neonShadow = null;
-  #inner = null;
+  #neon = null;
   #root = null;
 
   constructor() {
@@ -25,7 +25,7 @@ class Neon extends HTMLElement {
 
     const css = `
 <style>
-      .inner {
+      .neon {
         margin: ${this.#default.margin};
         width: ${this.#default.width};
         height: ${this.#default.height};
@@ -73,13 +73,15 @@ class Neon extends HTMLElement {
   connectedCallback() {
     console.log("connected");
 
+    console.log(this);
+
     this.#neonShadow = [...this.shadowRoot.styleSheets[0].cssRules].find(
       (rule) => rule.selectorText === ".neonShadow::after"
     ).style;
 
-    this.#inner = [...this.shadowRoot.styleSheets[0].cssRules].find((rule) => rule.selectorText === ".inner").style;
+    this.#neon = [...this.shadowRoot.styleSheets[0].cssRules].find((rule) => rule.selectorText === ".neon").style;
 
-    this.#root = this.shadowRoot.querySelector(".inner");
+    this.#root = this.shadowRoot.querySelector(".neon");
 
     if (this.isConnected) {
       if (!this.hasAttribute("src")) {
@@ -104,19 +106,19 @@ class Neon extends HTMLElement {
     console.log("Attribute Change");
     switch (name) {
       case "src":
-        this.#inner.backgroundImage = `url(${this.src})`;
+        this.#neon.backgroundImage = `url(${this.src})`;
         break;
       case "blur-amt":
         this.#updateFilter();
         break;
       case "margin":
-        this.#inner.margin = this.margin;
+        this.#neon.margin = this.margin;
         break;
       case "width":
-        this.#inner.width = this.width;
+        this.#neon.width = this.width;
         break;
       case "height":
-        this.#inner.height = this.height;
+        this.#neon.height = this.height;
         break;
     }
   }
