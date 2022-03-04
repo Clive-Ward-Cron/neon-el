@@ -1,4 +1,4 @@
-import domtoimage from "./dom-to-image-more/dom-to-image-more.min.js";
+import domtoimage from "dom-to-image-more";
 
 const template = document.createElement("template");
 
@@ -24,6 +24,8 @@ class Neon extends HTMLElement {
 
   constructor() {
     super();
+
+    console.log(domtoimage);
 
     const css = `
 <style>
