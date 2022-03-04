@@ -1,6 +1,6 @@
 const template = document.createElement("template");
 
-const html = `<div class="neonShadow neon"></div>`;
+const html = `<div class="neonShadow neon"><slot></slot></div>`;
 
 class Neon extends HTMLElement {
   static get observedAttributes() {

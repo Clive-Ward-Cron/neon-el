@@ -6,6 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Neon Light Effect Web Component</title>
     <style>
+      @font-face {
+        font-family: "flottflott";
+        src: url("./fonts/flottflott-webfont.woff2") format("woff2"),
+          url("./fonts/flottflott-webfont.woff") format("woff");
+        font-weight: normal;
+        font-style: normal;
+      }
       *,
       *::before,
       *::after {
@@ -90,12 +97,12 @@
     </style>
   </head>
   <body>
-    <h2>Original</h2>
+    <h1>Original</h1>
     <div class="parent">
       <div class="neonShadow neon"></div>
     </div>
 
-    <h2>Component</h2>
+    <h1>Component</h1>
     <button class="change">change</button>
     <button class="add">Add Neon</button>
 
@@ -115,8 +122,10 @@
       addBtn.addEventListener("click", () => {
         const newNeon = document.createElement("neon-el");
         container.appendChild(newNeon);
-        // newNeon.src = `https://source.unsplash.com/random/300x300/?beach`;
+        newNeon.src = `./img/beach.jpg`;
+        // newNeon.src = `./img/logo.png`;
         newNeon.src = `https://source.unsplash.com/random/300x300/?beach`;
+        // newNeon.src = `https://source.unsplash.com/random/300x300/?logo`;
       });
     </script>
   </body>
