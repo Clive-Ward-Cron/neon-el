@@ -1,3 +1,5 @@
+import domtoimage from "./dom-to-image-more/dom-to-image-more.min.js";
+
 const template = document.createElement("template");
 
 const html = `<div class="neonShadow neon"><slot></slot></div>`;
