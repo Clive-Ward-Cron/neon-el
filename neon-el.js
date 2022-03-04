@@ -85,7 +85,7 @@ class Neon extends HTMLElement {
 
     if (this.isConnected) {
       if (!this.hasAttribute("src")) {
-        this.src = "./img/1f363.svg";
+        this.src = "./img/neon-el.png";
       }
       if (!this.hasAttribute("blur-amt")) {
         this.blurAmt = this.#default.blurAmt;
