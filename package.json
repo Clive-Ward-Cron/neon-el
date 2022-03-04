@@ -2,12 +2,10 @@
   "name": "neon-el",
   "version": "1.0.0",
   "description": "Web Component to give an image or element a neon glow effect.",
-  "main": "neon-el.js",
-  "source": "index.html",
   "browserslist": "> 0.5%, last 2 versions, not dead",
   "scripts": {
     "start": "parcel",
-    "build": "parcel build"
+    "build": "parcel build index.html"
   },
   "repository": {
     "type": "git",
@@ -24,7 +22,10 @@
   },
   "homepage": "https://github.com/Clive-Ward-Cron/neon#readme",
   "devDependencies": {
-    "dom-to-image-more": "^2.9.5",
     "parcel": "^2.3.2"
+  },
+  "dependencies": {
+    "@swc/helpers": "^0.3.6",
+    "dom-to-image-more": "^2.9.5"
   }
 }
