@@ -6,7 +6,9 @@ This component <neon-el> takes an image url as a 'src' attribute and uses that t
 
 ## TODO
 
-Add functionality to allow slotting text or other inline element and have the same/similar effect applied to it.
+- Add functionality to allow slotting text or other inline element and have the same/similar effect applied to it.
+
+- Update the neon-el.png image to be nicer.
 
 ### Thoughts and Considerations
 
