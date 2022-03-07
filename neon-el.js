@@ -121,12 +121,13 @@ class Neon extends HTMLElement {
       if (this.shadowRoot.querySelector("slot").assignedNodes().length > 0) {
         domtoimage
           .toPng(el, {
-            width: el.offsetWidth,
-            height: el.offsetHeight,
+            width: this.offsetWidth,
+            height: this.offsetHeight,
           })
           .then((dataURL) => {
             this.src = dataURL;
             this.blurAmt = "10";
+            el.style.display = "none";
             console.log(dataURL);
             // const image = document.createElement("img");
             // image.src = dataURL;
