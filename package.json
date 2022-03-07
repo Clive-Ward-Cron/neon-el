@@ -17,7 +17,8 @@
   },
   "scripts": {
     "start": "parcel",
-    "build": "parcel build"
+    "build": "parcel build",
+    "watch": "parcel watch"
   },
   "repository": {
     "type": "git",

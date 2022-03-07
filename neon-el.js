@@ -3,7 +3,7 @@ const domtoimage = require("dom-to-image-more");
 
 const template = document.createElement("template");
 
-const html = `<div class="neonShadow neon"><slot></slot></div>`;
+const html = `<div class="neonShadow neon"><slot name="to-copy"></slot></div>`;
 
 class Neon extends HTMLElement {
   static get observedAttributes() {
@@ -26,15 +26,16 @@ class Neon extends HTMLElement {
   constructor() {
     super();
 
-    console.log(domtoimage);
-
     const css = `
 <style>
       .neon {
         margin: ${this.#default.margin};
         width: ${this.#default.width};
         height: ${this.#default.height};
-        background-position: center, center;
+        display: grid;
+        justify-content: center;
+        align-content: center;
+        background-position: center center;
         background-repeat: no-repeat;
         background-size: contain;
       }
@@ -78,8 +79,6 @@ class Neon extends HTMLElement {
   connectedCallback() {
     console.log("connected");
 
-    console.log(this);
-
     this.#neonShadow = [...this.shadowRoot.styleSheets[0].cssRules].find(
       (rule) => rule.selectorText === ".neonShadow::after"
     ).style;
@@ -105,6 +104,36 @@ class Neon extends HTMLElement {
         this.margin = this.#default.margin;
       }
     }
+
+    // Add an event listener for when the slot changes,
+    // Trying to copy the slot contents as an image and set as a blurred background image
+    this.shadowRoot.querySelector("slot").addEventListener("slotchange", (e) => {
+      console.log(e.target.assignedElements()[0]);
+      console.log(e.target.assignedElements()[0].getBoundingClientRect());
+      const rect = e.target.assignedElements()[0].getBoundingClientRect();
+      const el = e.target.assignedNodes()[0];
+
+      console.log(Math.ceil(rect.width) + 1, Math.ceil(rect.height) + 1);
+      console.log(e.target.assignedElements()[0].style.color);
+      console.log(this.shadowRoot.querySelector("slot").assignedNodes());
+      console.log(this.offsetHeight, this.offsetWidth);
+      //! TESTING OUT MODIFYING SLOTS
+      if (this.shadowRoot.querySelector("slot").assignedNodes().length > 0) {
+        domtoimage
+          .toPng(el, {
+            width: el.offsetWidth,
+            height: el.offsetHeight,
+          })
+          .then((dataURL) => {
+            this.src = dataURL;
+            this.blurAmt = "10";
+            console.log(dataURL);
+            // const image = document.createElement("img");
+            // image.src = dataURL;
+            // this.shadowRoot.querySelector(".neon").appendChild(image);
+          });
+      }
+    });
   }
 
   attributeChangedCallback(name, o, n) {
