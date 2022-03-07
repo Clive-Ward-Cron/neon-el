@@ -1,4 +1,5 @@
-import domtoimage from "dom-to-image-more";
+// import domtoimage from "dom-to-image-more";
+const domtoimage = require("dom-to-image-more");
 
 const template = document.createElement("template");
 

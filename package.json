@@ -1,11 +1,23 @@
 {
   "name": "neon-el",
+  "type": "module",
   "version": "1.0.0",
   "description": "Web Component to give an image or element a neon glow effect.",
   "browserslist": "> 0.5%, last 2 versions, not dead",
+  "source": "neon-el.js",
+  "module": "dist/neon-el.js",
+  "outputFormat": "esmodule",
+  "includeNodeModules": [
+    "dom-to-image-more"
+  ],
+  "context": "browser",
+  "alias": {
+    "dom-to-image-more": "./node_modules/dom-to-image-more",
+    "@swc/helpers": "./node_modules/@swc/helpers"
+  },
   "scripts": {
     "start": "parcel",
-    "build": "parcel build index.html"
+    "build": "parcel build"
   },
   "repository": {
     "type": "git",
