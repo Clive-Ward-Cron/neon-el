@@ -180,3 +180,4 @@ class Neon extends HTMLElement {
   }
 }
 customElements.define("neon-el", Neon);
+export default Neon;

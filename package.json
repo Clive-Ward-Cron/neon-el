@@ -10,7 +10,7 @@
   "includeNodeModules": [
     "dom-to-image-more"
   ],
-  "context": "browser",
+  "context": "module",
   "alias": {
     "dom-to-image-more": "./node_modules/dom-to-image-more",
     "@swc/helpers": "./node_modules/@swc/helpers"
