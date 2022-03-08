@@ -39,6 +39,9 @@ export function wrapIfTextNode(node) {
     newSpan.appendChild(node);
     parent.appendChild(newSpan);
 
+    console.log(this.neonId, parent);
+    console.log(this.neonId, newSpan);
+
     // Return the reference to the new span containing the text
     return newSpan;
   }

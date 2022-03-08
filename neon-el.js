@@ -9,6 +9,8 @@ class Neon extends HTMLElement {
     return ["src", "margin", "width", "height", "blur-amt"];
   }
 
+  static count = 0;
+
   #default = {
     blurAmt: 20,
     margin: "inherit", // 100
@@ -24,6 +26,9 @@ class Neon extends HTMLElement {
 
   constructor() {
     super();
+
+    this.neonId = Neon.count;
+    Neon.count = Neon.count + 1;
 
     const css = `
 <style>
@@ -110,7 +115,7 @@ class Neon extends HTMLElement {
   }
 
   attributeChangedCallback(name, o, n) {
-    console.log("Attribute Change");
+    // console.log("Attribute Change");
     switch (name) {
       case "src":
         this.#neon.backgroundImage = `url('${this.src}')`;
@@ -168,7 +173,7 @@ class Neon extends HTMLElement {
   }
 
   #updateFilter() {
-    console.log("updating filter");
+    // console.log("updating filter");
     this.filter = `drop-shadow(0px 0px 10px rgba(0, 0, 0, 0.5)) blur(${this.blurAmt}px)`;
     this.#neonShadow.filter = this.filter;
   }
@@ -177,7 +182,7 @@ class Neon extends HTMLElement {
     return getComputedStyle(this.#root).getPropertyValue("width") !== "0px";
   }
   #hasHeight() {
-    console.log(getComputedStyle(this.#root).getPropertyValue("height") !== "0px");
+    // console.log(getComputedStyle(this.#root).getPropertyValue("height") !== "0px");
     return getComputedStyle(this.#root).getPropertyValue("height") !== "0px";
   }
 }
