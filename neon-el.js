@@ -1,5 +1,6 @@
-// import domtoimage from "dom-to-image-more";
-const domtoimage = require("dom-to-image-more");
+import domtoimage from "dom-to-image-more";
+import { getComputedStyleObject } from "./utils";
+// const domtoimage = require("dom-to-image-more");
 
 const template = document.createElement("template");
 
@@ -108,30 +109,24 @@ class Neon extends HTMLElement {
     // Add an event listener for when the slot changes,
     // Trying to copy the slot contents as an image and set as a blurred background image
     this.shadowRoot.querySelector("slot").addEventListener("slotchange", (e) => {
-      console.log(e.target.assignedElements()[0]);
-      console.log(e.target.assignedElements()[0].getBoundingClientRect());
-      const rect = e.target.assignedElements()[0].getBoundingClientRect();
       const el = e.target.assignedNodes()[0];
+      console.dir(el);
+      console.table(getComputedStyleObject(el));
 
-      console.log(Math.ceil(rect.width) + 1, Math.ceil(rect.height) + 1);
-      console.log(e.target.assignedElements()[0].style.color);
-      console.log(this.shadowRoot.querySelector("slot").assignedNodes());
-      console.log(this.offsetHeight, this.offsetWidth);
       //! TESTING OUT MODIFYING SLOTS
       if (this.shadowRoot.querySelector("slot").assignedNodes().length > 0) {
+        const overwrite = {};
+        overwrite["margin-block"] = "0";
+        overwrite["margin"] = "0";
         domtoimage
-          .toPng(el, {
-            width: this.offsetWidth,
-            height: this.offsetHeight,
+          .toSvg(el, {
+            style: Object.assign(getComputedStyleObject(el), overwrite),
           })
           .then((dataURL) => {
             this.src = dataURL;
             this.blurAmt = "10";
             el.style.display = "none";
             console.log(dataURL);
-            // const image = document.createElement("img");
-            // image.src = dataURL;
-            // this.shadowRoot.querySelector(".neon").appendChild(image);
           });
       }
     });
@@ -141,7 +136,7 @@ class Neon extends HTMLElement {
     console.log("Attribute Change");
     switch (name) {
       case "src":
-        this.#neon.backgroundImage = `url(${this.src})`;
+        this.#neon.backgroundImage = `url('${this.src}')`;
         break;
       case "blur-amt":
         this.#updateFilter();
