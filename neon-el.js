@@ -1,10 +1,8 @@
-import domtoimage from "dom-to-image-more";
-import { getComputedStyleObject } from "./utils";
-// const domtoimage = require("dom-to-image-more");
+import { makeImage } from "./handlers.js";
 
 const template = document.createElement("template");
 
-const html = `<div class="neonShadow neon"><slot name="to-copy"></slot></div>`;
+const html = `<div class="neonShadow neon"><slot></slot></div>`;
 
 class Neon extends HTMLElement {
   static get observedAttributes() {
@@ -107,29 +105,8 @@ class Neon extends HTMLElement {
     }
 
     // Add an event listener for when the slot changes,
-    // Trying to copy the slot contents as an image and set as a blurred background image
-    this.shadowRoot.querySelector("slot").addEventListener("slotchange", (e) => {
-      const el = e.target.assignedNodes()[0];
-      console.dir(el);
-      console.table(getComputedStyleObject(el));
-
-      //! TESTING OUT MODIFYING SLOTS
-      if (this.shadowRoot.querySelector("slot").assignedNodes().length > 0) {
-        const overwrite = {};
-        overwrite["margin-block"] = "0";
-        overwrite["margin"] = "0";
-        domtoimage
-          .toSvg(el, {
-            style: Object.assign(getComputedStyleObject(el), overwrite),
-          })
-          .then((dataURL) => {
-            this.src = dataURL;
-            this.blurAmt = "10";
-            el.style.display = "none";
-            console.log(dataURL);
-          });
-      }
-    });
+    // To copy the slot contents as an image and set as a blurred background image
+    this.shadowRoot.querySelector("slot").addEventListener("slotchange", makeImage.bind(this));
   }
 
   attributeChangedCallback(name, o, n) {
