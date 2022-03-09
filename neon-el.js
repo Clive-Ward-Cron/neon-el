@@ -91,22 +91,20 @@ class Neon extends HTMLElement {
 
     this.#root = this.shadowRoot.querySelector(".neon");
 
-    if (this.isConnected) {
-      if (!this.hasAttribute("src")) {
-        this.src = "./img/neon-el.png";
-      }
-      if (!this.hasAttribute("blur-amt")) {
-        this.blurAmt = this.#default.blurAmt;
-      }
-      if (!this.hasAttribute("width")) {
-        this.width = this.#hasWidth() ? this.#default.width : "150px";
-      }
-      if (!this.hasAttribute("height")) {
-        this.height = this.#hasHeight() ? this.#default.height : "150px";
-      }
-      if (!this.hasAttribute("margin")) {
-        this.margin = this.#default.margin;
-      }
+    if (!this.hasAttribute("src") && this.shadowRoot.querySelector("slot").assignedNodes().length <= 0) {
+      this.src = "./img/neon-el.png";
+    }
+    if (!this.hasAttribute("blur-amt")) {
+      this.blurAmt = this.#default.blurAmt;
+    }
+    if (!this.hasAttribute("width")) {
+      this.width = this.#hasWidth() ? this.#default.width : "150px";
+    }
+    if (!this.hasAttribute("height")) {
+      this.height = this.#hasHeight() ? this.#default.height : "150px";
+    }
+    if (!this.hasAttribute("margin")) {
+      this.margin = this.#default.margin;
     }
 
     // Add an event listener for when the slot changes,
