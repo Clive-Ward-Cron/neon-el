@@ -22,18 +22,25 @@ export function makeImage(e) {
     overwrite["margin-block"] = "0"; // margins were applied in the SVG
     overwrite["margin"] = "0";
     overwrite["white-space"] = "nowrap"; // Fixes unwanted text nodes wrapping
+
+    const tempFix = 5; // Temporary fix for font sidebearing issue
+
     domtoimage
       .toSvg(el, {
-        width: rectWidth,
+        width: rectWidth + tempFix,
         height: rectHeight,
         style: Object.assign(getComputedStyleObject(el), overwrite),
       })
       .then((dataURL) => {
+        // Set the returned SVG data as the background image
         this.src = dataURL;
-        console.log(dataURL);
-        this.blurAmt = "10";
+        // Adjust the width and height of the component
+        // or the returned image won't display
         this.width = rectWidth + "px";
         this.height = rectHeight + "px";
+
+        // Don't display the original slotted element
+        // or there will be an ugly overlay
         el.style.display = "none";
       });
   }
