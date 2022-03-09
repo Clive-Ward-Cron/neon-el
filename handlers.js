@@ -53,7 +53,8 @@ export function makeImage(e) {
 
         // Don't display the original slotted element
         // or there will be an ugly overlay
-        el.style.display = "none";
+        // el.style.display = "none";
+        el.style.opacity = 0;
       });
   }
 }
