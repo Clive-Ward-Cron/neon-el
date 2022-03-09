@@ -111,6 +111,8 @@ class Neon extends HTMLElement {
 
     // Add an event listener for when the slot changes,
     // To copy the slot contents as an image and set as a blurred background image
+    //! Need to figure out a way to prevent this from causing multiple
+    //! events to be processed when the text node is swapped
     this.shadowRoot.querySelector("slot").addEventListener("slotchange", makeImage.bind(this));
   }
 
