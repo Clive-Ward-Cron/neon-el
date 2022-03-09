@@ -30,7 +30,11 @@ export function makeImage(e) {
 
     domtoimage
       .toSvg(el, {
-        width: rectWidth + tempFix,
+        width:
+          rectWidth +
+          parseInt(elStyles.marginRight.replace("px")) +
+          parseInt(elStyles.marginLeft.replace("px")) +
+          tempFix,
         height: rectHeight,
         style: Object.assign(elStyles, overwrite),
       })
@@ -39,8 +43,13 @@ export function makeImage(e) {
         this.src = dataURL;
         // Adjust the width and height of the component
         // or the returned image won't display
-        this.width = rectWidth + "px";
-        this.height = rectHeight + parseInt(elStyles.marginBlockStart.replace("px")) * 2 + "px";
+        this.width =
+          rectWidth + parseInt(elStyles.marginRight.replace("px")) + parseInt(elStyles.marginLeft.replace("px")) + "px";
+        this.height =
+          rectHeight +
+          parseInt(elStyles.marginTop.replace("px")) +
+          parseInt(elStyles.marginBottom.replace("px")) +
+          "px";
 
         // Don't display the original slotted element
         // or there will be an ugly overlay
