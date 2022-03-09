@@ -97,6 +97,7 @@ class Neon extends HTMLElement {
     if (!this.hasAttribute("blur-amt")) {
       this.blurAmt = this.#default.blurAmt;
     }
+    //! Weird janky stuff could be coming from here
     if (!this.hasAttribute("width")) {
       this.width = this.#hasWidth() ? this.#default.width : "150px";
     }
