@@ -5,12 +5,15 @@ const template = document.createElement("template");
 const html = `<div class="neonShadow neon"><slot></slot></div>`;
 
 class Neon extends HTMLElement {
+  // Set up to watch changes on these attributes
   static get observedAttributes() {
     return ["src", "margin", "width", "height", "blur-amt", "font-compensation"];
   }
 
+  // Variable will count the number of NeonEls created and use it as an ID
   static count = 0;
 
+  // A private object that holds some default values
   #default = {
     blurAmt: 20,
     margin: "inherit", // 100
@@ -21,6 +24,7 @@ class Neon extends HTMLElement {
 
   #filter = `drop-shadow(0px 0px 10px rgba(0, 0, 0, 0.5)) blur(${this.#default.blurAmt}px)`;
 
+  // Create these private variables to be updated later in the connected hook
   #neonShadow = null;
   #neon = null;
   #root = null;
@@ -82,23 +86,24 @@ class Neon extends HTMLElement {
   }
 
   connectedCallback() {
-    console.log("connected");
+    // Get the styles of the base component to be updated later
+    this.#neon = [...this.shadowRoot.styleSheets[0].cssRules].find((rule) => rule.selectorText === ".neon").style;
 
+    // Get the pseudo element styles so they can be updated later
     this.#neonShadow = [...this.shadowRoot.styleSheets[0].cssRules].find(
       (rule) => rule.selectorText === ".neonShadow::after"
     ).style;
 
-    this.#neon = [...this.shadowRoot.styleSheets[0].cssRules].find((rule) => rule.selectorText === ".neon").style;
-
+    // Get the root element
     this.#root = this.shadowRoot.querySelector(".neon");
 
+    // If attributes aren't set by the user, set their defaults
     if (!this.hasAttribute("src") && this.shadowRoot.querySelector("slot").assignedNodes().length <= 0) {
       this.src = "./img/neon-el.png";
     }
     if (!this.hasAttribute("blur-amt")) {
       this.blurAmt = this.#default.blurAmt;
     }
-    //! Weird janky stuff could be coming from here
     if (!this.hasAttribute("width")) {
       this.width = this.#hasWidth() ? this.#default.width : "150px";
     }
@@ -119,8 +124,8 @@ class Neon extends HTMLElement {
     this.shadowRoot.querySelector("slot").addEventListener("slotchange", makeImage.bind(this));
   }
 
+  // Processes the observed/watched attributes as they are changed
   attributeChangedCallback(name, o, n) {
-    // console.log("Attribute Change");
     switch (name) {
       case "src":
         this.#neon.backgroundImage = `url('${this.src}')`;
@@ -145,6 +150,7 @@ class Neon extends HTMLElement {
     }
   }
 
+  // Getters and Setters for each attribute
   get src() {
     return this.getAttribute("src");
   }
@@ -186,22 +192,27 @@ class Neon extends HTMLElement {
     return parseInt(this.getAttribute("font-compensation"));
   }
   set fontCompensation(n) {
+    // The compensation amount MUST be a valid number
     let compensation = parseInt(n);
     if (Number.isNaN(compensation)) compensation = 0;
     this.setAttribute("font-compensation", compensation);
   }
 
+  // Private Methods for internal component settings
+
+  // Updated the filter that is applied to the neonShadow::after pseudo element
   #updateFilter() {
-    // console.log("updating filter");
     this.filter = `drop-shadow(0px 0px 10px rgba(0, 0, 0, 0.5)) blur(${this.blurAmt}px)`;
     this.#neonShadow.filter = this.filter;
   }
 
+  // TODO: These functions need to be re-evaluated, users may want to set a width or height of 0
+  // Checks that the neon-el has a width greater than zero
   #hasWidth() {
     return getComputedStyle(this.#root).getPropertyValue("width") !== "0px";
   }
+  // Checks that the neon-el has a height greater than zero
   #hasHeight() {
-    // console.log(getComputedStyle(this.#root).getPropertyValue("height") !== "0px");
     return getComputedStyle(this.#root).getPropertyValue("height") !== "0px";
   }
 }
