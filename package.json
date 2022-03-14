@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "description": "Web Component to give an image or element a neon glow effect.",
   "browserslist": "> 0.5%, last 2 versions, not dead",
-  "source": "neon-el.js",
+  "source": "src/index.js",
   "module": "dist/neon-el.js",
   "outputFormat": "esmodule",
   "includeNodeModules": [
