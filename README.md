@@ -4,9 +4,11 @@ This is my first attempt at creating my own custom web component.
 
 This component <neon-el> takes an image url as a 'src' attribute and uses that to add the image as the background image and uses CSS to give it a neat blurred halo effect in the background that color matches the image used.
 
+Elements can now be slotted into the <neon-el> and an SVG image of the contents will be generated from it. There are some quirks on image sizing and fonts affecting the final image. More comprehensive testing for various different element and nesting combinations is needed.
+
 ## TODO
 
-- Add functionality to allow slotting text or other inline element and have the same/similar effect applied to it.
+- ~~Add functionality to allow slotting text or other inline element and have the same/similar effect applied to it.~~
 
 - Update the neon-el.png image to be nicer.
 
