@@ -10,7 +10,7 @@ Elements can now be slotted into the <neon-el> and an SVG image of the contents 
 
 - ~~Add functionality to allow slotting text or other inline element and have the same/similar effect applied to it.~~
 
-- Update the neon-el.png image to be nicer.
+- Update the neon-el.png image to be an SVG (Possibly Integrate It As a default for the component)
 
 ### Thoughts and Considerations
 
