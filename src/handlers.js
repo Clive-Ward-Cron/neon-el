@@ -10,6 +10,11 @@ export function makeImage(e) {
     // Otherwise it returns the unmodified element node.
     const el = wrapIfTextNode.bind(this)(e.target.assignedNodes()[0]);
 
+    // The Element needs to be visible to create an image of it
+    if (el.style.opacity === "0") {
+      el.style.opacity = 1;
+    }
+
     // Get the width and height from the bounding client rect and get an integer instead of float
     const rect = el?.getBoundingClientRect ? el.getBoundingClientRect() : this.getBoundingClientRect();
     const rectWidth = Math.ceil(rect.width);
@@ -26,7 +31,9 @@ export function makeImage(e) {
     overwrite["margin-block"] = "0"; // margins were applied in the SVG
     overwrite["white-space"] = "nowrap"; // Fixes unwanted text nodes wrapping
 
-    const tempFix = 10; // Temporary fix for font sidebearing issue
+    // Replaces a temporary fix
+    // User will have to figure their own font compensation amount
+    const compensation = this.fontCompensation;
 
     domtoimage
       .toSvg(el, {
@@ -34,7 +41,7 @@ export function makeImage(e) {
           rectWidth +
           parseInt(elStyles.marginRight.replace("px")) +
           parseInt(elStyles.marginLeft.replace("px")) +
-          tempFix,
+          compensation,
         height: rectHeight,
         style: Object.assign(elStyles, overwrite),
       })

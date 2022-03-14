@@ -6,7 +6,7 @@ const html = `<div class="neonShadow neon"><slot></slot></div>`;
 
 class Neon extends HTMLElement {
   static get observedAttributes() {
-    return ["src", "margin", "width", "height", "blur-amt"];
+    return ["src", "margin", "width", "height", "blur-amt", "font-compensation"];
   }
 
   static count = 0;
@@ -16,6 +16,7 @@ class Neon extends HTMLElement {
     margin: "inherit", // 100
     width: "inherit", // 150
     height: "inherit", // 150
+    fontCompensation: 0,
   };
 
   #filter = `drop-shadow(0px 0px 10px rgba(0, 0, 0, 0.5)) blur(${this.#default.blurAmt}px)`;
@@ -107,6 +108,9 @@ class Neon extends HTMLElement {
     if (!this.hasAttribute("margin")) {
       this.margin = this.#default.margin;
     }
+    if (!this.hasAttribute("font-compensation")) {
+      this.fontCompensation = this.#default.fontCompensation;
+    }
 
     // Add an event listener for when the slot changes,
     // To copy the slot contents as an image and set as a blurred background image
@@ -133,6 +137,11 @@ class Neon extends HTMLElement {
       case "height":
         this.#neon.height = this.height;
         break;
+      case "font-compensation":
+        if (o && o !== n) {
+          this.fontCompensation = n;
+          this.shadowRoot.querySelector("slot").dispatchEvent(new Event("slotchange"));
+        }
     }
   }
 
@@ -171,6 +180,15 @@ class Neon extends HTMLElement {
   }
   set height(n) {
     this.setAttribute("height", n);
+  }
+
+  get fontCompensation() {
+    return parseInt(this.getAttribute("font-compensation"));
+  }
+  set fontCompensation(n) {
+    let compensation = parseInt(n);
+    if (Number.isNaN(compensation)) compensation = 0;
+    this.setAttribute("font-compensation", compensation);
   }
 
   #updateFilter() {
