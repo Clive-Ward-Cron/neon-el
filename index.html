@@ -80,9 +80,11 @@
         display: grid;
         gap: 20px;
         row-gap: 50px;
-        grid-template-columns: repeat(3, 150px);
+        grid-template-columns: repeat(3, 300px);
         justify-content: space-around;
         align-content: center;
+        justify-items: center;
+        align-items: center;
       }
 
       .parent {
@@ -91,8 +93,16 @@
       }
 
       neon-el {
-        width: 150px;
-        height: 150px;
+        /* width: 150px;
+        height: 150px; */
+        font-family: "flottflott";
+        color: white;
+        font-size: 2.2rem;
+      }
+
+      .test {
+        font-family: "flottflott";
+        color: white;
       }
     </style>
   </head>
@@ -108,9 +118,18 @@
 
     <div class="neon-container">
       <neon-el id="start"></neon-el>
+      <neon-el
+        ><div>
+          <p><span>TEST</span></p>
+        </div></neon-el
+      >
+      <neon-el>Another Test</neon-el>
+      <neon-el font-compensation="10">A B C</neon-el>
+      <neon-el><p style="color: orange">TEST 4</p></neon-el>
+      <div class="test"><p>A B C</p></div>
     </div>
 
-    <script src="./neon-el.js" type="module"></script>
+    <script src="./dist/neon-el.js" type="module"></script>
     <script>
       const changeBtn = document.querySelector(".change");
       const addBtn = document.querySelector(".add");
