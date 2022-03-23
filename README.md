@@ -6,6 +6,12 @@ This component <neon-el> takes an image url as a 'src' attribute and uses that t
 
 Elements can now be slotted into the <neon-el> and an SVG image of the contents will be generated from it. There are some quirks on image sizing and fonts affecting the final image. More comprehensive testing for various different element and nesting combinations is needed.
 
+# Development & Building
+
+Use `npm run watch` to work on neon-el files
+
+Use `npm run build` to build the neon-el.js file
+
 ## TODO
 
 - ~~Add functionality to allow slotting text or other inline element and have the same/similar effect applied to it.~~
