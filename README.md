@@ -18,6 +18,8 @@ Use `npm run build` to build the neon-el.js file
 
 - Update the neon-el.png image to be an SVG (Possibly Integrate It As a default for the component)
 
+- Look into the possibility of optimizing SVG at or after generation. Possibly using [SVGO](https://github.com/svg/svgo)
+
 ### Thoughts and Considerations
 
 Is the following:
