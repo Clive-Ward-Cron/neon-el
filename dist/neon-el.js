@@ -591,17 +591,22 @@ function $549e0f202f0d259c$export$7a2bdede98851ac5(e) {
 }
 
 
-const $c38b013c361dbfdf$var$template = document.createElement("template");
-const $c38b013c361dbfdf$var$html = `<div class="neonShadow neon"><slot></slot></div>`;
+var $1b07835e6369f783$export$2e2bcd8739ae039 = `<div class="neonShadow neon"><slot></slot></div>`;
+
+
+var $b234ea392e67ea5e$exports = {};
+$b234ea392e67ea5e$exports = ".neon {\n  margin: inherit;\n  width: inherit;\n  height: inherit;\n  background-position: center;\n  background-repeat: no-repeat;\n  background-size: contain;\n  align-content: center;\n  justify-content: center;\n  display: grid;\n}\n\n.neonShadow {\n  position: relative;\n}\n\n.neonShadow:after {\n  content: \"\";\n  width: 100%;\n  height: 100%;\n  background: inherit;\n  filter: drop-shadow(0 0 10px rgba(0, 0, 0, .5)) blur(20px);\n  z-index: -1;\n  background-position: center;\n  animation: oscillate 1s cubic-bezier(.17, .67, .45, 1.32) infinite alternate;\n  position: absolute;\n}\n\n@keyframes oscillate {\n  from {\n    transform: scale(1);\n  }\n\n  to {\n    transform: scale(1.2);\n  }\n}\n\n";
+
+
 var // A private object that holds some default values
-_default = /*#__PURE__*/ new WeakMap(), _filter = /*#__PURE__*/ new WeakMap(), // Create these private variables to be updated later in the connected hook
+_default = /*#__PURE__*/ new WeakMap(), // Create these private variables to be updated later in the connected hook
 _neonShadow = /*#__PURE__*/ new WeakMap(), _neon = /*#__PURE__*/ new WeakMap(), _root = /*#__PURE__*/ new WeakMap(), // Private Methods for internal component settings
 // Updated the filter that is applied to the neonShadow::after pseudo element
 _updateFilter = /*#__PURE__*/ new WeakSet(), // TODO: These functions need to be re-evaluated, users may want to set a width or height of 0
 // Checks that the neon-el has a width greater than zero
 _hasWidth = /*#__PURE__*/ new WeakSet(), // Checks that the neon-el has a height greater than zero
 _hasHeight = /*#__PURE__*/ new WeakSet();
-class $c38b013c361dbfdf$var$Neon extends HTMLElement {
+class $c38b013c361dbfdf$var$NeonEl extends HTMLElement {
     // Set up to watch changes on these attributes
     static get observedAttributes() {
         return [
@@ -633,7 +638,7 @@ class $c38b013c361dbfdf$var$Neon extends HTMLElement {
             if (!this.hasAttribute("font-compensation")) this.fontCompensation = $5c90f01a1e93ad01$export$2e2bcd8739ae039(this, _default).fontCompensation;
             // Add an event listener for when the slot changes,
             // To copy the slot contents as an image and set as a blurred background image
-            //! The "slotchange" event will fire multiple times when a text node is the slotted node because the text node will be removed, wrapped, and then added again for the image to be generated
+            //! The "slotchange" event will fire multiple times when a text node is the slotted node because the text node will be removed, wrapped, and then added again for the image to be generated, mitigated in handler.js
             this.shadowRoot.querySelector("slot").addEventListener("slotchange", $549e0f202f0d259c$export$7a2bdede98851ac5.bind(this));
         }
     }
@@ -656,6 +661,8 @@ class $c38b013c361dbfdf$var$Neon extends HTMLElement {
                 $5c90f01a1e93ad01$export$2e2bcd8739ae039(this, _neon).height = this.height;
                 break;
             case "font-compensation":
+                // If the font-compensation attribute is updated,
+                // dispatch the slotchange event
                 if (o && o !== n) {
                     this.fontCompensation = n;
                     this.shadowRoot.querySelector("slot").dispatchEvent(new Event("slotchange"));
@@ -717,10 +724,6 @@ class $c38b013c361dbfdf$var$Neon extends HTMLElement {
                 fontCompensation: 0
             }
         });
-        $a207a3ac25b1c338$export$2e2bcd8739ae039(this, _filter, {
-            writable: true,
-            value: `drop-shadow(0px 0px 10px rgba(0, 0, 0, 0.5)) blur(${$5c90f01a1e93ad01$export$2e2bcd8739ae039(this, _default).blurAmt}px)`
-        });
         $a207a3ac25b1c338$export$2e2bcd8739ae039(this, _neonShadow, {
             writable: true,
             value: null
@@ -733,65 +736,29 @@ class $c38b013c361dbfdf$var$Neon extends HTMLElement {
             writable: true,
             value: null
         });
-        this.neonId = $c38b013c361dbfdf$var$Neon.count;
-        $c38b013c361dbfdf$var$Neon.count = $c38b013c361dbfdf$var$Neon.count + 1;
-        const css = `
-<style>
-      .neon {
-        margin: ${$5c90f01a1e93ad01$export$2e2bcd8739ae039(this, _default).margin};
-        width: ${$5c90f01a1e93ad01$export$2e2bcd8739ae039(this, _default).width};
-        height: ${$5c90f01a1e93ad01$export$2e2bcd8739ae039(this, _default).height};
-        display: grid;
-        justify-content: center;
-        align-content: center;
-        background-position: center center;
-        background-repeat: no-repeat;
-        background-size: contain;
-      }
-
-      .neonShadow {
-        position: relative;
-      }
-
-      .neonShadow::after {
-        content: "";
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        background: inherit;
-        background-position: center center;
-        filter: ${$5c90f01a1e93ad01$export$2e2bcd8739ae039(this, _filter)};
-        z-index: -1;
-
-        /* animation time! */
-        animation: oscillate 1s cubic-bezier(0.17, 0.67, 0.45, 1.32) infinite alternate;
-      }
-
-      @keyframes oscillate {
-        from {
-          transform: scale(1, 1);
-        }
-
-        to {
-          transform: scale(1.2, 1.2);
-        }
-      }
-</style>
-`;
-        $c38b013c361dbfdf$var$template.innerHTML = `
-      ${css}
-      ${$c38b013c361dbfdf$var$html}
-      `;
+        // Keeps track of the different instances of Neon-El
+        this.neonId = $c38b013c361dbfdf$var$NeonEl.count;
+        $c38b013c361dbfdf$var$NeonEl.count = $c38b013c361dbfdf$var$NeonEl.count + 1;
+        // Create the Template and Style elements
+        const template = document.createElement("template");
+        const style = document.createElement("style");
+        // Add the imported html for the template structure
+        template.innerHTML = $1b07835e6369f783$export$2e2bcd8739ae039;
+        // Add the imported CSS to the created style element
+        style.textContent = (/*@__PURE__*/$parcel$interopDefault($b234ea392e67ea5e$exports));
+        // Create the shadowRoot for the component using the created template
         this.attachShadow({
             mode: "open"
-        }).appendChild($c38b013c361dbfdf$var$template.content.cloneNode(true));
+        }).appendChild(template.content.cloneNode(true));
+        // Append the created styles to the shadowRoot
+        this.shadowRoot.appendChild(style);
     }
 }
 // Variable will count the number of NeonEls created and use it as an ID
-$cfef344cd38c105c$export$2e2bcd8739ae039($c38b013c361dbfdf$var$Neon, "count", 0);
+$cfef344cd38c105c$export$2e2bcd8739ae039($c38b013c361dbfdf$var$NeonEl, "count", 0);
 function updateFilter() {
-    this.filter = `drop-shadow(0px 0px 10px rgba(0, 0, 0, 0.5)) blur(${this.blurAmt}px)`;
-    $5c90f01a1e93ad01$export$2e2bcd8739ae039(this, _neonShadow).filter = this.filter;
+    let filter = `drop-shadow(0px 0px 10px rgba(0, 0, 0, 0.5)) blur(${this.blurAmt}px)`;
+    $5c90f01a1e93ad01$export$2e2bcd8739ae039(this, _neonShadow).filter = filter;
 }
 function hasWidth() {
     return getComputedStyle($5c90f01a1e93ad01$export$2e2bcd8739ae039(this, _root)).getPropertyValue("width") !== "0px";
@@ -799,8 +766,8 @@ function hasWidth() {
 function hasHeight() {
     return getComputedStyle($5c90f01a1e93ad01$export$2e2bcd8739ae039(this, _root)).getPropertyValue("height") !== "0px";
 }
-customElements.define("neon-el", $c38b013c361dbfdf$var$Neon);
-var $c38b013c361dbfdf$export$2e2bcd8739ae039 = $c38b013c361dbfdf$var$Neon;
+customElements.define("neon-el", $c38b013c361dbfdf$var$NeonEl);
+var $c38b013c361dbfdf$export$2e2bcd8739ae039 = $c38b013c361dbfdf$var$NeonEl;
 
 
 export {$c38b013c361dbfdf$export$2e2bcd8739ae039 as default};
