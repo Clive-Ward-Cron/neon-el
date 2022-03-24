@@ -41,8 +41,9 @@ export function makeImage(e) {
         style: Object.assign(elStyles, overwrite),
       })
       .then((dataURL) => {
-        // TODO: Look into finding a way to do this in the dom-to-image-more
-        // Set the returned SVG data as the background image
+        // TODO: See if I can opt-out of font-face rules in dom-to-image-more
+        // Remove the inline base64 font-face style from the returned SVG data
+        // and set it as the background image
         this.src = dataURL.replace(/<style>@font-face.*<\/style>/, "").replace(/%0A/g, "");
         // Adjust the width and height of the component
         // or the returned image won't display
