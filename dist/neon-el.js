@@ -541,10 +541,15 @@ function $4c225ee090a8f350$export$39727932d807f83e(node) {
 function $549e0f202f0d259c$export$7a2bdede98851ac5(e) {
     // Make an image out of the slotted node and assign it as the background image
     if (this.shadowRoot.querySelector("slot").assignedNodes().length > 0) {
+        const originalNodeType = e.target.assignedNodes()[0].nodeType;
         // pass the slots first child to wrapIfTextNode
         // If its a text node it will be returned wrapped in a span,
         // Otherwise it returns the unmodified element node.
         const el = $4c225ee090a8f350$export$39727932d807f83e.bind(this)(e.target.assignedNodes()[0]);
+        // After wrapping a text node, short-circut the handler so that the new
+        // event with the wrapped node is processed instead.
+        //? Keeps domtoimage.toSVG() from being ran unnecessarily
+        if (originalNodeType !== Node.ELEMENT_NODE) return;
         // The Element needs to be visible to create an image of it
         if (el.style.opacity === "0") el.style.opacity = 1;
         // Get the width and height from the bounding client rect and get an integer instead of float
@@ -560,13 +565,19 @@ function $549e0f202f0d259c$export$7a2bdede98851ac5(e) {
         overwrite["white-space"] = "nowrap"; // Fixes unwanted text nodes wrapping
         // User will have to figure their own font compensation amount
         const compensation = this.fontCompensation;
+        // Pass the element to be imaged as an SVG to dom-to-image
+        // Gives it a width and height of the boundingClientRect along
+        // with any margin associated with the el (Adds the font compensation if given)
+        // Uses the style object that was genereated from the elements CSSStyleDeclaration and merges any values that are present in the
+        // overwrite object
         (/*@__PURE__*/$parcel$interopDefault($6716112bc694bd6e$exports)).toSvg(el, {
             width: rectWidth + parseInt(elStyles.marginRight.replace("px")) + parseInt(elStyles.marginLeft.replace("px")) + compensation,
             height: rectHeight,
             style: Object.assign(elStyles, overwrite)
         }).then((dataURL)=>{
-            // TODO: Look into finding a way to do this in the dom-to-image-more
-            // Set the returned SVG data as the background image
+            // TODO: See if I can opt-out of font-face rules in dom-to-image-more
+            // Remove the inline base64 font-face style from the returned SVG data
+            // and set it as the background image
             this.src = dataURL.replace(/<style>@font-face.*<\/style>/, "").replace(/%0A/g, "");
             // Adjust the width and height of the component
             // or the returned image won't display
@@ -603,27 +614,28 @@ class $c38b013c361dbfdf$var$Neon extends HTMLElement {
         ];
     }
     connectedCallback() {
-        $c7458e7a3415e664$export$2e2bcd8739ae039(this, _neon, [
-            ...this.shadowRoot.styleSheets[0].cssRules
-        ].find((rule)=>rule.selectorText === ".neon"
-        ).style);
-        $c7458e7a3415e664$export$2e2bcd8739ae039(this, _neonShadow, [
-            ...this.shadowRoot.styleSheets[0].cssRules
-        ].find((rule)=>rule.selectorText === ".neonShadow::after"
-        ).style);
-        $c7458e7a3415e664$export$2e2bcd8739ae039(this, _root, this.shadowRoot.querySelector(".neon"));
-        // If attributes aren't set by the user, set their defaults
-        if (!this.hasAttribute("src") && this.shadowRoot.querySelector("slot").assignedNodes().length <= 0) this.src = "./img/neon-el.png";
-        if (!this.hasAttribute("blur-amt")) this.blurAmt = $5c90f01a1e93ad01$export$2e2bcd8739ae039(this, _default).blurAmt;
-        if (!this.hasAttribute("width")) this.width = $2eec7714a30d92b0$export$2e2bcd8739ae039(this, _hasWidth, hasWidth).call(this) ? $5c90f01a1e93ad01$export$2e2bcd8739ae039(this, _default).width : "150px";
-        if (!this.hasAttribute("height")) this.height = $2eec7714a30d92b0$export$2e2bcd8739ae039(this, _hasHeight, hasHeight).call(this) ? $5c90f01a1e93ad01$export$2e2bcd8739ae039(this, _default).height : "150px";
-        if (!this.hasAttribute("margin")) this.margin = $5c90f01a1e93ad01$export$2e2bcd8739ae039(this, _default).margin;
-        if (!this.hasAttribute("font-compensation")) this.fontCompensation = $5c90f01a1e93ad01$export$2e2bcd8739ae039(this, _default).fontCompensation;
-        // Add an event listener for when the slot changes,
-        // To copy the slot contents as an image and set as a blurred background image
-        //! Need to figure out a way to prevent this from causing multiple
-        //! events to be processed when the text node is swapped
-        this.shadowRoot.querySelector("slot").addEventListener("slotchange", $549e0f202f0d259c$export$7a2bdede98851ac5.bind(this));
+        if (this.isConnected) {
+            $c7458e7a3415e664$export$2e2bcd8739ae039(this, _neon, [
+                ...this.shadowRoot.styleSheets[0].cssRules
+            ].find((rule)=>rule.selectorText === ".neon"
+            ).style);
+            $c7458e7a3415e664$export$2e2bcd8739ae039(this, _neonShadow, [
+                ...this.shadowRoot.styleSheets[0].cssRules
+            ].find((rule)=>rule.selectorText === ".neonShadow::after"
+            ).style);
+            $c7458e7a3415e664$export$2e2bcd8739ae039(this, _root, this.shadowRoot.querySelector(".neon"));
+            // If attributes aren't set by the user, set their defaults
+            if (!this.hasAttribute("src") && this.shadowRoot.querySelector("slot").assignedNodes().length <= 0) this.src = "./img/neon-el.png";
+            if (!this.hasAttribute("blur-amt")) this.blurAmt = $5c90f01a1e93ad01$export$2e2bcd8739ae039(this, _default).blurAmt;
+            if (!this.hasAttribute("width")) this.width = $2eec7714a30d92b0$export$2e2bcd8739ae039(this, _hasWidth, hasWidth).call(this) ? $5c90f01a1e93ad01$export$2e2bcd8739ae039(this, _default).width : "150px";
+            if (!this.hasAttribute("height")) this.height = $2eec7714a30d92b0$export$2e2bcd8739ae039(this, _hasHeight, hasHeight).call(this) ? $5c90f01a1e93ad01$export$2e2bcd8739ae039(this, _default).height : "150px";
+            if (!this.hasAttribute("margin")) this.margin = $5c90f01a1e93ad01$export$2e2bcd8739ae039(this, _default).margin;
+            if (!this.hasAttribute("font-compensation")) this.fontCompensation = $5c90f01a1e93ad01$export$2e2bcd8739ae039(this, _default).fontCompensation;
+            // Add an event listener for when the slot changes,
+            // To copy the slot contents as an image and set as a blurred background image
+            //! The "slotchange" event will fire multiple times when a text node is the slotted node because the text node will be removed, wrapped, and then added again for the image to be generated
+            this.shadowRoot.querySelector("slot").addEventListener("slotchange", $549e0f202f0d259c$export$7a2bdede98851ac5.bind(this));
+        }
     }
     // Processes the observed/watched attributes as they are changed
     attributeChangedCallback(name, o, n) {

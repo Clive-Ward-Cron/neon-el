@@ -86,42 +86,43 @@ class Neon extends HTMLElement {
   }
 
   connectedCallback() {
-    // Get the styles of the base component to be updated later
-    this.#neon = [...this.shadowRoot.styleSheets[0].cssRules].find((rule) => rule.selectorText === ".neon").style;
+    if (this.isConnected) {
+      // Get the styles of the base component to be updated later
+      this.#neon = [...this.shadowRoot.styleSheets[0].cssRules].find((rule) => rule.selectorText === ".neon").style;
 
-    // Get the pseudo element styles so they can be updated later
-    this.#neonShadow = [...this.shadowRoot.styleSheets[0].cssRules].find(
-      (rule) => rule.selectorText === ".neonShadow::after"
-    ).style;
+      // Get the pseudo element styles so they can be updated later
+      this.#neonShadow = [...this.shadowRoot.styleSheets[0].cssRules].find(
+        (rule) => rule.selectorText === ".neonShadow::after"
+      ).style;
 
-    // Get the root element
-    this.#root = this.shadowRoot.querySelector(".neon");
+      // Get the root element
+      this.#root = this.shadowRoot.querySelector(".neon");
 
-    // If attributes aren't set by the user, set their defaults
-    if (!this.hasAttribute("src") && this.shadowRoot.querySelector("slot").assignedNodes().length <= 0) {
-      this.src = "./img/neon-el.png";
-    }
-    if (!this.hasAttribute("blur-amt")) {
-      this.blurAmt = this.#default.blurAmt;
-    }
-    if (!this.hasAttribute("width")) {
-      this.width = this.#hasWidth() ? this.#default.width : "150px";
-    }
-    if (!this.hasAttribute("height")) {
-      this.height = this.#hasHeight() ? this.#default.height : "150px";
-    }
-    if (!this.hasAttribute("margin")) {
-      this.margin = this.#default.margin;
-    }
-    if (!this.hasAttribute("font-compensation")) {
-      this.fontCompensation = this.#default.fontCompensation;
-    }
+      // If attributes aren't set by the user, set their defaults
+      if (!this.hasAttribute("src") && this.shadowRoot.querySelector("slot").assignedNodes().length <= 0) {
+        this.src = "./img/neon-el.png";
+      }
+      if (!this.hasAttribute("blur-amt")) {
+        this.blurAmt = this.#default.blurAmt;
+      }
+      if (!this.hasAttribute("width")) {
+        this.width = this.#hasWidth() ? this.#default.width : "150px";
+      }
+      if (!this.hasAttribute("height")) {
+        this.height = this.#hasHeight() ? this.#default.height : "150px";
+      }
+      if (!this.hasAttribute("margin")) {
+        this.margin = this.#default.margin;
+      }
+      if (!this.hasAttribute("font-compensation")) {
+        this.fontCompensation = this.#default.fontCompensation;
+      }
 
-    // Add an event listener for when the slot changes,
-    // To copy the slot contents as an image and set as a blurred background image
-    //! Need to figure out a way to prevent this from causing multiple
-    //! events to be processed when the text node is swapped
-    this.shadowRoot.querySelector("slot").addEventListener("slotchange", makeImage.bind(this));
+      // Add an event listener for when the slot changes,
+      // To copy the slot contents as an image and set as a blurred background image
+      //! The "slotchange" event will fire multiple times when a text node is the slotted node because the text node will be removed, wrapped, and then added again for the image to be generated
+      this.shadowRoot.querySelector("slot").addEventListener("slotchange", makeImage.bind(this));
+    }
   }
 
   // Processes the observed/watched attributes as they are changed

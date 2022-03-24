@@ -8,10 +8,16 @@ import { getComputedStyleObject, wrapIfTextNode } from "./utils";
 export function makeImage(e) {
   // Make an image out of the slotted node and assign it as the background image
   if (this.shadowRoot.querySelector("slot").assignedNodes().length > 0) {
+    const originalNodeType = e.target.assignedNodes()[0].nodeType;
     // pass the slots first child to wrapIfTextNode
     // If its a text node it will be returned wrapped in a span,
     // Otherwise it returns the unmodified element node.
     const el = wrapIfTextNode.bind(this)(e.target.assignedNodes()[0]);
+
+    // After wrapping a text node, short-circut the handler so that the new
+    // event with the wrapped node is processed instead.
+    //? Keeps domtoimage.toSVG() from being ran unnecessarily
+    if (originalNodeType !== Node.ELEMENT_NODE) return;
 
     // The Element needs to be visible to create an image of it
     if (el.style.opacity === "0") {
