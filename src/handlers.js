@@ -1,6 +1,10 @@
 import domtoimage from "dom-to-image-more";
 import { getComputedStyleObject, wrapIfTextNode } from "./utils";
 
+/**
+ * @description The handler for the slotchanged event on the web component. If the component has a slotted content it uses dom-to-image-more to create an SVG image of that content and uses that as the image to be animated.
+ * @param {Event} e The slot changed event
+ */
 export function makeImage(e) {
   // Make an image out of the slotted node and assign it as the background image
   if (this.shadowRoot.querySelector("slot").assignedNodes().length > 0) {
@@ -30,6 +34,11 @@ export function makeImage(e) {
     // User will have to figure their own font compensation amount
     const compensation = this.fontCompensation;
 
+    // Pass the element to be imaged as an SVG to dom-to-image
+    // Gives it a width and height of the boundingClientRect along
+    // with any margin associated with the el (Adds the font compensation if given)
+    // Uses the style object that was genereated from the elements CSSStyleDeclaration and merges any values that are present in the
+    // overwrite object
     domtoimage
       .toSvg(el, {
         width:
