@@ -42,11 +42,9 @@ export function makeImage(e) {
         style: Object.assign(elStyles, overwrite),
       })
       .then((dataURL) => {
-        //! Testing SVGO
-        console.log(svgo);
-
+        // TODO: Look into finding a way to do this in the dom-to-image-more
         // Set the returned SVG data as the background image
-        this.src = dataURL;
+        this.src = dataURL.replace(/<style>@font-face.*<\/style>/, "").replace(/%0A/g, "");
         // Adjust the width and height of the component
         // or the returned image won't display
         this.width =
