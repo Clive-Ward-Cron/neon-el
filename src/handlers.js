@@ -1,6 +1,5 @@
 import domtoimage from "dom-to-image-more";
 import { getComputedStyleObject, wrapIfTextNode } from "./utils";
-import svgo from "svgo";
 
 export function makeImage(e) {
   // Make an image out of the slotted node and assign it as the background image
