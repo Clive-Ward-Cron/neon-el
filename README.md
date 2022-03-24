@@ -16,9 +16,9 @@ Use `npm run build` to build the neon-el.js file
 
 - ~~Add functionality to allow slotting text or other inline element and have the same/similar effect applied to it.~~
 
-- Update the neon-el.png image to be an SVG (Possibly Integrate It As a default for the component)
+- ~~Look into the possibility of optimizing SVG at or after generation. Possibly using [SVGO](https://github.com/svg/svgo)~~ No benefit
 
-- Look into the possibility of optimizing SVG at or after generation. Possibly using [SVGO](https://github.com/svg/svgo)
+- Update the neon-el.png image to be an SVG (Possibly Integrate It As a default for the component)
 
 ### Thoughts and Considerations
 
