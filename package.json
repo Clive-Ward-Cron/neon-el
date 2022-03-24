@@ -12,8 +12,12 @@
   ],
   "context": "module",
   "alias": {
-    "dom-to-image-more": "./node_modules/dom-to-image-more",
-    "@swc/helpers": "./node_modules/@swc/helpers"
+    "dom-to-image-more": "/node_modules/dom-to-image-more",
+    "@swc/helpers": "/node_modules/@swc/helpers",
+    "svgo": "/node_modules/svgo/dist/svgo.browser.js",
+    "buffer": "/node_modules/buffer",
+    "base64-js": "/node_modules/base64-js",
+    "ieee754": "/node_modules/ieee754"
   },
   "scripts": {
     "start": "parcel",
@@ -39,6 +43,8 @@
   },
   "dependencies": {
     "@swc/helpers": "^0.3.6",
-    "dom-to-image-more": "^2.9.5"
+    "buffer": "^6.0.3",
+    "dom-to-image-more": "^2.9.5",
+    "svgo": "^2.8.0"
   }
 }

@@ -1,5 +1,6 @@
 import domtoimage from "dom-to-image-more";
 import { getComputedStyleObject, wrapIfTextNode } from "./utils";
+import svgo from "svgo";
 
 export function makeImage(e) {
   // Make an image out of the slotted node and assign it as the background image
@@ -41,6 +42,9 @@ export function makeImage(e) {
         style: Object.assign(elStyles, overwrite),
       })
       .then((dataURL) => {
+        //! Testing SVGO
+        console.log(svgo);
+
         // Set the returned SVG data as the background image
         this.src = dataURL;
         // Adjust the width and height of the component
