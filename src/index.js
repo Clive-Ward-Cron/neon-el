@@ -1,6 +1,7 @@
 import { makeImage } from "./handlers.js";
 import html from "./template.js";
 import css from "bundle-text:./style.css";
+import defaultSVG from "./defaultSVG.js";
 class NeonEl extends HTMLElement {
   // Set up to watch changes on these attributes
   static get observedAttributes() {
@@ -60,25 +61,16 @@ class NeonEl extends HTMLElement {
       // Get the root element
       this.#root = this.shadowRoot.querySelector(".neon");
 
-      // If attributes aren't set by the user, set their defaults
+      // If necessary attributes/properties aren't set, set their defaults
       if (!this.hasAttribute("src") && this.shadowRoot.querySelector("slot").assignedNodes().length <= 0) {
-        this.src = "./img/neon-el.png";
+        this.src = defaultSVG;
       }
       if (!this.hasAttribute("blur-amt")) {
         this.blurAmt = this.#default.blurAmt;
       }
-      if (!this.hasAttribute("width")) {
-        this.width = this.#hasWidth() ? this.#default.width : "150px";
-      }
-      if (!this.hasAttribute("height")) {
-        this.height = this.#hasHeight() ? this.#default.height : "150px";
-      }
-      if (!this.hasAttribute("margin")) {
-        this.margin = this.#default.margin;
-      }
-      if (!this.hasAttribute("font-compensation")) {
-        this.fontCompensation = this.#default.fontCompensation;
-      }
+      this.#neon.margin = this.margin;
+      this.#neon.width = this.width;
+      this.#neon.height = this.height;
 
       // Add an event listener for when the slot changes,
       // To copy the slot contents as an image and set as a blurred background image
@@ -142,6 +134,9 @@ class NeonEl extends HTMLElement {
   }
 
   get margin() {
+    if (!this.hasAttribute("margin")) {
+      return this.#default.margin;
+    }
     return this.getAttribute("margin");
   }
   set margin(n) {
@@ -149,6 +144,9 @@ class NeonEl extends HTMLElement {
   }
 
   get width() {
+    if (!this.hasAttribute("width")) {
+      return this.#hasWidth() ? this.#default.width : "150px";
+    }
     return this.getAttribute("width");
   }
   set width(n) {
@@ -156,6 +154,9 @@ class NeonEl extends HTMLElement {
   }
 
   get height() {
+    if (!this.hasAttribute("height")) {
+      return this.#hasHeight() ? this.#default.height : "150px";
+    }
     return this.getAttribute("height");
   }
   set height(n) {
@@ -163,6 +164,9 @@ class NeonEl extends HTMLElement {
   }
 
   get fontCompensation() {
+    if (!this.hasAttribute("font-compensation")) {
+      return this.#default.fontCompensation;
+    }
     return parseInt(this.getAttribute("font-compensation"));
   }
   set fontCompensation(n) {
