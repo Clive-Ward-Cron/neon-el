@@ -23,7 +23,6 @@ class NeonEl extends HTMLElement {
   // Create these private variables to be updated later in the connected hook
   #neonShadow = null;
   #neon = null;
-  #root = null;
 
   constructor() {
     super();
@@ -57,9 +56,6 @@ class NeonEl extends HTMLElement {
       this.#neonShadow = [...this.shadowRoot.styleSheets[0].cssRules].find(
         (rule) => rule.selectorText === ".neonShadow::after"
       ).style;
-
-      // Get the root element
-      this.#root = this.shadowRoot.querySelector(".neon");
 
       // If necessary attributes/properties aren't set, set their defaults
       if (!this.hasAttribute("src") && this.shadowRoot.querySelector("slot").assignedNodes().length <= 0) {
@@ -145,7 +141,7 @@ class NeonEl extends HTMLElement {
 
   get width() {
     if (!this.hasAttribute("width")) {
-      return this.#hasWidth() ? this.#default.width : "150px";
+      return this.#default.width;
     }
     return this.getAttribute("width");
   }
@@ -155,7 +151,7 @@ class NeonEl extends HTMLElement {
 
   get height() {
     if (!this.hasAttribute("height")) {
-      return this.#hasHeight() ? this.#default.height : "150px";
+      return this.#default.height;
     }
     return this.getAttribute("height");
   }
@@ -182,16 +178,6 @@ class NeonEl extends HTMLElement {
   #updateFilter() {
     let filter = `drop-shadow(0px 0px 10px rgba(0, 0, 0, 0.5)) blur(${this.blurAmt}px)`;
     this.#neonShadow.filter = filter;
-  }
-
-  // TODO: These functions need to be re-evaluated, users may want to set a width or height of 0
-  // Checks that the neon-el has a width greater than zero
-  #hasWidth() {
-    return getComputedStyle(this.#root).getPropertyValue("width") !== "0px";
-  }
-  // Checks that the neon-el has a height greater than zero
-  #hasHeight() {
-    return getComputedStyle(this.#root).getPropertyValue("height") !== "0px";
   }
 }
 customElements.define("neon-el", NeonEl);

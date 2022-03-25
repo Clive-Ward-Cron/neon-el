@@ -603,12 +603,9 @@ var $7f7b1cf2d569a3ce$export$2e2bcd8739ae039 = `data:image/svg+xml;charset=utf-8
 
 var // A private object that holds some default values
 _default = /*#__PURE__*/ new WeakMap(), // Create these private variables to be updated later in the connected hook
-_neonShadow = /*#__PURE__*/ new WeakMap(), _neon = /*#__PURE__*/ new WeakMap(), _root = /*#__PURE__*/ new WeakMap(), // Private Methods for internal component settings
+_neonShadow = /*#__PURE__*/ new WeakMap(), _neon = /*#__PURE__*/ new WeakMap(), // Private Methods for internal component settings
 // Updated the filter that is applied to the neonShadow::after pseudo element
-_updateFilter = /*#__PURE__*/ new WeakSet(), // TODO: These functions need to be re-evaluated, users may want to set a width or height of 0
-// Checks that the neon-el has a width greater than zero
-_hasWidth = /*#__PURE__*/ new WeakSet(), // Checks that the neon-el has a height greater than zero
-_hasHeight = /*#__PURE__*/ new WeakSet();
+_updateFilter = /*#__PURE__*/ new WeakSet();
 class $c38b013c361dbfdf$var$NeonEl extends HTMLElement {
     // Set up to watch changes on these attributes
     static get observedAttributes() {
@@ -632,7 +629,6 @@ class $c38b013c361dbfdf$var$NeonEl extends HTMLElement {
                 ...this.shadowRoot.styleSheets[0].cssRules
             ].find((rule)=>rule.selectorText === ".neonShadow::after"
             ).style);
-            $c7458e7a3415e664$export$2e2bcd8739ae039(this, _root, this.shadowRoot.querySelector(".neon"));
             // If necessary attributes/properties aren't set, set their defaults
             if (!this.hasAttribute("src") && this.shadowRoot.querySelector("slot").assignedNodes().length <= 0) this.src = $7f7b1cf2d569a3ce$export$2e2bcd8739ae039;
             if (!this.hasAttribute("blur-amt")) this.blurAmt = $5c90f01a1e93ad01$export$2e2bcd8739ae039(this, _default).blurAmt;
@@ -700,14 +696,14 @@ class $c38b013c361dbfdf$var$NeonEl extends HTMLElement {
         this.setAttribute("margin", n);
     }
     get width() {
-        if (!this.hasAttribute("width")) return $2eec7714a30d92b0$export$2e2bcd8739ae039(this, _hasWidth, hasWidth).call(this) ? $5c90f01a1e93ad01$export$2e2bcd8739ae039(this, _default).width : "150px";
+        if (!this.hasAttribute("width")) return $5c90f01a1e93ad01$export$2e2bcd8739ae039(this, _default).width;
         return this.getAttribute("width");
     }
     set width(n) {
         this.setAttribute("width", n);
     }
     get height() {
-        if (!this.hasAttribute("height")) return $2eec7714a30d92b0$export$2e2bcd8739ae039(this, _hasHeight, hasHeight).call(this) ? $5c90f01a1e93ad01$export$2e2bcd8739ae039(this, _default).height : "150px";
+        if (!this.hasAttribute("height")) return $5c90f01a1e93ad01$export$2e2bcd8739ae039(this, _default).height;
         return this.getAttribute("height");
     }
     set height(n) {
@@ -726,8 +722,6 @@ class $c38b013c361dbfdf$var$NeonEl extends HTMLElement {
     constructor(){
         super();
         $9cec2274b1d86876$export$2e2bcd8739ae039(this, _updateFilter);
-        $9cec2274b1d86876$export$2e2bcd8739ae039(this, _hasWidth);
-        $9cec2274b1d86876$export$2e2bcd8739ae039(this, _hasHeight);
         $a207a3ac25b1c338$export$2e2bcd8739ae039(this, _default, {
             writable: true,
             value: {
@@ -743,10 +737,6 @@ class $c38b013c361dbfdf$var$NeonEl extends HTMLElement {
             value: null
         });
         $a207a3ac25b1c338$export$2e2bcd8739ae039(this, _neon, {
-            writable: true,
-            value: null
-        });
-        $a207a3ac25b1c338$export$2e2bcd8739ae039(this, _root, {
             writable: true,
             value: null
         });
@@ -773,12 +763,6 @@ $cfef344cd38c105c$export$2e2bcd8739ae039($c38b013c361dbfdf$var$NeonEl, "count", 
 function updateFilter() {
     let filter = `drop-shadow(0px 0px 10px rgba(0, 0, 0, 0.5)) blur(${this.blurAmt}px)`;
     $5c90f01a1e93ad01$export$2e2bcd8739ae039(this, _neonShadow).filter = filter;
-}
-function hasWidth() {
-    return getComputedStyle($5c90f01a1e93ad01$export$2e2bcd8739ae039(this, _root)).getPropertyValue("width") !== "0px";
-}
-function hasHeight() {
-    return getComputedStyle($5c90f01a1e93ad01$export$2e2bcd8739ae039(this, _root)).getPropertyValue("height") !== "0px";
 }
 customElements.define("neon-el", $c38b013c361dbfdf$var$NeonEl);
 var $c38b013c361dbfdf$export$2e2bcd8739ae039 = $c38b013c361dbfdf$var$NeonEl;
