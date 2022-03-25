@@ -611,6 +611,7 @@ class $c38b013c361dbfdf$var$NeonEl extends HTMLElement {
     static get observedAttributes() {
         return [
             "src",
+            "alt",
             "margin",
             "width",
             "height",
@@ -638,7 +639,7 @@ class $c38b013c361dbfdf$var$NeonEl extends HTMLElement {
             if (!this.hasAttribute("font-compensation")) this.fontCompensation = $5c90f01a1e93ad01$export$2e2bcd8739ae039(this, _default).fontCompensation;
             // Add an event listener for when the slot changes,
             // To copy the slot contents as an image and set as a blurred background image
-            //! The "slotchange" event will fire multiple times when a text node is the slotted node because the text node will be removed, wrapped, and then added again for the image to be generated, mitigated in handler.js
+            //! The "slotchange" event will fire multiple times when a text node is the slotted node because the text node will be removed, wrapped, and then added again for the image to be generated, this is mitigated in handler.js
             this.shadowRoot.querySelector("slot").addEventListener("slotchange", $549e0f202f0d259c$export$7a2bdede98851ac5.bind(this));
         }
     }
@@ -675,6 +676,13 @@ class $c38b013c361dbfdf$var$NeonEl extends HTMLElement {
     }
     set src(n) {
         this.setAttribute("src", n);
+    }
+    get alt() {
+        if (!this.hasAttribute("alt")) return "";
+        return this.getAttribute("alt");
+    }
+    set alt(n) {
+        this.setAttribute("alt", n);
     }
     get blurAmt() {
         return this.getAttribute("blur-amt");

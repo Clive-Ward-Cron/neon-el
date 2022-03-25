@@ -4,7 +4,7 @@ import css from "bundle-text:./style.css";
 class NeonEl extends HTMLElement {
   // Set up to watch changes on these attributes
   static get observedAttributes() {
-    return ["src", "margin", "width", "height", "blur-amt", "font-compensation"];
+    return ["src", "alt", "margin", "width", "height", "blur-amt", "font-compensation"];
   }
 
   // Variable will count the number of NeonEls created and use it as an ID
@@ -82,7 +82,7 @@ class NeonEl extends HTMLElement {
 
       // Add an event listener for when the slot changes,
       // To copy the slot contents as an image and set as a blurred background image
-      //! The "slotchange" event will fire multiple times when a text node is the slotted node because the text node will be removed, wrapped, and then added again for the image to be generated, mitigated in handler.js
+      //! The "slotchange" event will fire multiple times when a text node is the slotted node because the text node will be removed, wrapped, and then added again for the image to be generated, this is mitigated in handler.js
       this.shadowRoot.querySelector("slot").addEventListener("slotchange", makeImage.bind(this));
     }
   }
@@ -122,6 +122,15 @@ class NeonEl extends HTMLElement {
 
   set src(n) {
     this.setAttribute("src", n);
+  }
+
+  get alt() {
+    if (!this.hasAttribute("alt")) return "";
+    return this.getAttribute("alt");
+  }
+
+  set alt(n) {
+    this.setAttribute("alt", n);
   }
 
   get blurAmt() {
