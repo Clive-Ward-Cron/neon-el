@@ -18,6 +18,16 @@ function $5c90f01a1e93ad01$export$2e2bcd8739ae039(receiver, privateMap) {
     return $d443089ebc2e15a8$export$2e2bcd8739ae039(receiver, descriptor);
 }
 
+function $ff08a604e972d7c1$export$2e2bcd8739ae039(obj, privateCollection) {
+    if (privateCollection.has(obj)) throw new TypeError("Cannot initialize the same private elements twice on an object");
+}
+
+
+function $a207a3ac25b1c338$export$2e2bcd8739ae039(obj, privateMap, value) {
+    $ff08a604e972d7c1$export$2e2bcd8739ae039(obj, privateMap);
+    privateMap.set(obj, value);
+}
+
 
 function $20b547a1dcb54124$export$2e2bcd8739ae039(receiver, descriptor, value) {
     if (descriptor.set) descriptor.set.call(receiver, value);
@@ -42,6 +52,12 @@ function $2eec7714a30d92b0$export$2e2bcd8739ae039(receiver, privateSet, fn) {
     return fn;
 }
 
+
+function $9cec2274b1d86876$export$2e2bcd8739ae039(obj, privateSet) {
+    $ff08a604e972d7c1$export$2e2bcd8739ae039(obj, privateSet);
+    privateSet.add(obj);
+}
+
 function $cfef344cd38c105c$export$2e2bcd8739ae039(obj, key, value) {
     if (key in obj) Object.defineProperty(obj, key, {
         value: value,
@@ -64,7 +80,7 @@ var $6716112bc694bd6e$exports = {};
         parseExtension: t1,
         mimeType: function(e2) {
             e2 = t1(e2).toLowerCase();
-            return (function() {
+            return function() {
                 var e = "application/font-woff", t = "image/jpeg";
                 return {
                     woff: e,
@@ -78,7 +94,7 @@ var $6716112bc694bd6e$exports = {};
                     tiff: "image/tiff",
                     svg: "image/svg+xml"
                 };
-            })()[e2] || "";
+            }()[e2] || "";
         },
         dataAsUrl: function(e, t) {
             return "data:" + t + ";base64," + e;
@@ -89,7 +105,7 @@ var $6716112bc694bd6e$exports = {};
         canvasToBlob: function(t2) {
             return t2.toBlob ? new Promise(function(e) {
                 t2.toBlob(e);
-            }) : (function(i) {
+            }) : function(i) {
                 return new Promise(function(e) {
                     for(var t = d(i.toDataURL().split(",")[1]), n = t.length, r = new Uint8Array(n), o = 0; o < n; o++)r[o] = t.charCodeAt(o);
                     e(new Blob([
@@ -98,7 +114,7 @@ var $6716112bc694bd6e$exports = {};
                         type: "image/png"
                     }));
                 });
-            })(t2);
+            }(t2);
         },
         resolveUrl: function(e, t) {
             var n = document.implementation.createHTMLDocument(), r = n.createElement("base");
@@ -221,18 +237,6 @@ var $6716112bc694bd6e$exports = {};
         }
     };
     function l() {
-        function t5(t) {
-            return {
-                resolve: function() {
-                    var e = (t.parentStyleSheet || {
-                    }).href;
-                    return i1.inlineAll(t.cssText, e);
-                },
-                src: function() {
-                    return t.style.getPropertyValue("src");
-                }
-            };
-        }
         return Promise.resolve(c.asArray(document.styleSheets)).then(function(e8) {
             var n = [];
             return e8.forEach(function(t) {
@@ -251,10 +255,26 @@ var $6716112bc694bd6e$exports = {};
         }).then(function(e) {
             return e.map(t5);
         });
+        function t5(t) {
+            return {
+                resolve: function() {
+                    var e = (t.parentStyleSheet || {}).href;
+                    return i1.inlineAll(t.cssText, e);
+                },
+                src: function() {
+                    return t.style.getPropertyValue("src");
+                }
+            };
+        }
     }
     var f = {
         inlineAll: function t6(e10) {
             if (!(e10 instanceof Element)) return Promise.resolve(e10);
+            return n2(e10).then(function() {
+                return e10 instanceof HTMLImageElement ? h(e10).inline() : Promise.all(c.asArray(e10.childNodes).map(function(e) {
+                    return t6(e);
+                }));
+            });
             function n2(t) {
                 var n = t.style.getPropertyValue("background");
                 return n ? i1.inlineAll(n).then(function(e) {
@@ -263,11 +283,6 @@ var $6716112bc694bd6e$exports = {};
                     return t;
                 }) : Promise.resolve(t);
             }
-            return n2(e10).then(function() {
-                return e10 instanceof HTMLImageElement ? h(e10).inline() : Promise.all(c.asArray(e10.childNodes).map(function(e) {
-                    return t6(e);
-                }));
-            });
         },
         impl: {
             newImage: h
@@ -294,51 +309,49 @@ var $6716112bc694bd6e$exports = {};
     }, p = {
         toSvg: y,
         toPng: function(e12, t) {
-            return (t = t || {
-            }).raster = !0, v(e12, t).then(function(e) {
+            return (t = t || {}).raster = !0, v(e12, t).then(function(e) {
                 return e.toDataURL();
             });
         },
         toJpeg: function(e13, t) {
-            return (t = t || {
-            }).raster = !0, v(e13, t).then(function(e) {
+            return (t = t || {}).raster = !0, v(e13, t).then(function(e) {
                 return e.toDataURL("image/jpeg", t.quality || 1);
             });
         },
         toBlob: function(e, t) {
-            return (t = t || {
-            }).raster = !0, v(e, t).then(c.canvasToBlob);
+            return (t = t || {}).raster = !0, v(e, t).then(c.canvasToBlob);
         },
         toPixelData: function(t, e14) {
-            return (e14 = e14 || {
-            }).raster = !0, v(t, e14).then(function(e) {
+            return (e14 = e14 || {}).raster = !0, v(t, e14).then(function(e) {
                 return e.getContext("2d").getImageData(0, 0, c.width(t), c.height(t)).data;
             });
         },
         toCanvas: function(e, t) {
-            return v(e, t || {
-            });
+            return v(e, t || {});
         },
         impl: {
             fontFaces: s,
             images: f,
             util: c,
             inliner: i1,
-            options: {
-            }
+            options: {}
         }
     };
-    "object" == typeof $6716112bc694bd6e$exports && "object" == "object" ? $6716112bc694bd6e$exports = p : e1.domtoimage = p;
+    $6716112bc694bd6e$exports = p;
     const g = e1.getComputedStyle || window.getComputedStyle, d = e1.atob || window.atob;
     function y(r2, o2) {
-        return (function(e) {
+        return function(e) {
             void 0 === e.imagePlaceholder ? p.impl.options.imagePlaceholder = m.imagePlaceholder : p.impl.options.imagePlaceholder = e.imagePlaceholder;
             void 0 === e.cacheBust ? p.impl.options.cacheBust = m.cacheBust : p.impl.options.cacheBust = e.cacheBust;
             void 0 === e.useCredentials ? p.impl.options.useCredentials = m.useCredentials : p.impl.options.useCredentials = e.useCredentials;
-        })(o2 = o2 || {
-        }), Promise.resolve(r2).then(function(e15) {
-            return (function r3(t7, o3, a2, i2) {
+        }(o2 = o2 || {}), Promise.resolve(r2).then(function(e15) {
+            return function r3(t7, o3, a2, i2) {
                 if (!a2 && o3 && !o3(t7)) return Promise.resolve();
+                return Promise.resolve(t7).then(e16).then(function(e) {
+                    return n3(t7, e);
+                }).then(function(e) {
+                    return u2(t7, e, i2);
+                });
                 function e16(e17) {
                     return e17 instanceof HTMLCanvasElement ? c.makeImage(e17.toDataURL()) : "IFRAME" === e17.nodeName ? html2canvas(e17.contentDocument.body).then((e)=>e.toDataURL()
                     ).then(c.makeImage) : e17.cloneNode(!1);
@@ -427,12 +440,7 @@ var $6716112bc694bd6e$exports = {};
                         }));
                     }
                 }
-                return Promise.resolve(t7).then(e16).then(function(e) {
-                    return n3(t7, e);
-                }).then(function(e) {
-                    return u2(t7, e, i2);
-                });
-            })(e15, o2.filter, !0, !o2.raster);
+            }(e15, o2.filter, !0, !o2.raster);
         }).then(P).then(w).then(function(t) {
             o2.bgcolor && (t.style.backgroundColor = o2.bgcolor);
             o2.width && (t.style.width = o2.width + "px");
@@ -440,14 +448,14 @@ var $6716112bc694bd6e$exports = {};
             o2.style && Object.keys(o2.style).forEach(function(e) {
                 t.style[e] = o2.style[e];
             });
-            var e = null;
-            "function" == typeof o2.onclone && (e = o2.onclone(t));
-            return Promise.resolve(e).then(function() {
+            var e27 = null;
+            "function" == typeof o2.onclone && (e27 = o2.onclone(t));
+            return Promise.resolve(e27).then(function() {
                 return t;
             });
-        }).then(function(e27) {
+        }).then(function(e28) {
             var t, n;
-            return t = o2.width || c.width(r2), n = o2.height || c.height(r2), Promise.resolve(e27).then(function(e) {
+            return t = o2.width || c.width(r2), n = o2.height || c.height(r2), Promise.resolve(e28).then(function(e) {
                 return e.setAttribute("xmlns", "http://www.w3.org/1999/xhtml"), (new XMLSerializer).serializeToString(e);
             }).then(c.escapeXhtml).then(function(e) {
                 return '<foreignObject x="0" y="0" width="100%" height="100%">' + e + "</foreignObject>";
@@ -459,13 +467,13 @@ var $6716112bc694bd6e$exports = {};
         });
     }
     function v(o, i) {
-        return y(o, i).then(c.makeImage).then(c.delay(0)).then(function(e28) {
+        return y(o, i).then(c.makeImage).then(c.delay(0)).then(function(e29) {
             var t13 = "number" != typeof i.scale ? 1 : i.scale, n7 = function(e, t) {
                 var n = document.createElement("canvas");
                 n.width = (i.width || c.width(e)) * t, n.height = (i.height || c.height(e)) * t, i.bgcolor && ((t = n.getContext("2d")).fillStyle = i.bgcolor, t.fillRect(0, 0, n.width, n.height));
                 return n;
             }(o, t13), r = n7.getContext("2d");
-            return r.mozImageSmoothingEnabled = !1, r.msImageSmoothingEnabled = !1, r.imageSmoothingEnabled = !1, e28 && (r.scale(t13, t13), r.drawImage(e28, 0, 0)), n7;
+            return r.mozImageSmoothingEnabled = !1, r.msImageSmoothingEnabled = !1, r.imageSmoothingEnabled = !1, e29 && (r.scale(t13, t13), r.drawImage(e29, 0, 0)), n7;
         });
     }
     function P(n) {
@@ -503,16 +511,13 @@ function $4c225ee090a8f350$export$74d0f8ed30f6559d(el) {
                 if (!value || !key || !isNaN(parseInt(key))) return style;
                 style[key] = value;
                 return style;
-            }, {
-            });
+            }, {});
             // Return the style object
             return obj;
-        } else return {
-        };
+        } else return {};
     } catch (error) {
         console.log(error);
-        return {
-        };
+        return {};
     }
 }
 function $4c225ee090a8f350$export$39727932d807f83e(node) {
@@ -536,10 +541,15 @@ function $4c225ee090a8f350$export$39727932d807f83e(node) {
 function $549e0f202f0d259c$export$7a2bdede98851ac5(e) {
     // Make an image out of the slotted node and assign it as the background image
     if (this.shadowRoot.querySelector("slot").assignedNodes().length > 0) {
+        const originalNodeType = e.target.assignedNodes()[0].nodeType;
         // pass the slots first child to wrapIfTextNode
         // If its a text node it will be returned wrapped in a span,
         // Otherwise it returns the unmodified element node.
         const el = $4c225ee090a8f350$export$39727932d807f83e.bind(this)(e.target.assignedNodes()[0]);
+        // After wrapping a text node, short-circut the handler so that the new
+        // event with the wrapped node is processed instead.
+        //? Keeps domtoimage.toSVG() from being ran unnecessarily
+        if (originalNodeType !== Node.ELEMENT_NODE) return;
         // The Element needs to be visible to create an image of it
         if (el.style.opacity === "0") el.style.opacity = 1;
         // Get the width and height from the bounding client rect and get an integer instead of float
@@ -550,19 +560,25 @@ function $549e0f202f0d259c$export$7a2bdede98851ac5(e) {
         // Need to declare a set of default styles to overwrite the
         // ones that are generated by domtoimage that cause issues.
         // ! Need to use Bracket Accessor to overwrite the properties properly
-        const overwrite = {
-        };
+        const overwrite = {};
         overwrite["margin-block"] = "0"; // margins were applied in the SVG
         overwrite["white-space"] = "nowrap"; // Fixes unwanted text nodes wrapping
         // User will have to figure their own font compensation amount
         const compensation = this.fontCompensation;
+        // Pass the element to be imaged as an SVG to dom-to-image
+        // Gives it a width and height of the boundingClientRect along
+        // with any margin associated with the el (Adds the font compensation if given)
+        // Uses the style object that was genereated from the elements CSSStyleDeclaration and merges any values that are present in the
+        // overwrite object
         (/*@__PURE__*/$parcel$interopDefault($6716112bc694bd6e$exports)).toSvg(el, {
             width: rectWidth + parseInt(elStyles.marginRight.replace("px")) + parseInt(elStyles.marginLeft.replace("px")) + compensation,
             height: rectHeight,
             style: Object.assign(elStyles, overwrite)
         }).then((dataURL)=>{
-            // Set the returned SVG data as the background image
-            this.src = dataURL;
+            // TODO: See if I can opt-out of font-face rules in dom-to-image-more
+            // Remove the inline base64 font-face style from the returned SVG data
+            // and set it as the background image
+            this.src = dataURL.replace(/<style>@font-face.*<\/style>/, "").replace(/%0A/g, "");
             // Adjust the width and height of the component
             // or the returned image won't display
             this.width = rectWidth + parseInt(elStyles.marginRight.replace("px")) + parseInt(elStyles.marginLeft.replace("px")) + "px";
@@ -575,19 +591,27 @@ function $549e0f202f0d259c$export$7a2bdede98851ac5(e) {
 }
 
 
-const $c38b013c361dbfdf$var$template = document.createElement("template");
-const $c38b013c361dbfdf$var$html = `<div class="neonShadow neon"><slot></slot></div>`;
-var // Private Methods for internal component settings
+var $1b07835e6369f783$export$2e2bcd8739ae039 = `<div class="neonShadow neon"><slot></slot></div>`;
+
+
+var $b234ea392e67ea5e$exports = {};
+$b234ea392e67ea5e$exports = ".neon {\n  margin: inherit;\n  width: inherit;\n  height: inherit;\n  background-position: center;\n  background-repeat: no-repeat;\n  background-size: contain;\n  align-content: center;\n  justify-content: center;\n  display: grid;\n}\n\n.neonShadow {\n  position: relative;\n}\n\n.neonShadow:after {\n  content: \"\";\n  width: 100%;\n  height: 100%;\n  background: inherit;\n  filter: drop-shadow(0 0 10px rgba(0, 0, 0, .5)) blur(20px);\n  z-index: -1;\n  background-position: center;\n  animation: oscillate 1s cubic-bezier(.17, .67, .45, 1.32) infinite alternate;\n  position: absolute;\n}\n\n@keyframes oscillate {\n  from {\n    transform: scale(1);\n  }\n\n  to {\n    transform: scale(1.2);\n  }\n}\n\n";
+
+
+var $7f7b1cf2d569a3ce$export$2e2bcd8739ae039 = `data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 314 72"><defs><linearGradient id="a" x1="0%" x2="100%" y1="0%" y2="0%"><stop offset="0%" stop-color="%239815c3"/><stop offset="100%" stop-color="%237206ff"/></linearGradient></defs><path fill="url(%23a)" stroke="none" d="M79.9 1a283.8 283.8 0 0 1-20.6 39c-4 6.2-7.2 11.5-13.3 16 .1-16.7 7.8-38.5 14-54L48.4 5 33.7 28 13.5 56 1 71l11.8-1.2 9-9.8L42 31c-1.5 8.1-5 21.3-5 29 0 3.4-1 11.3 4 11.3S54.3 61.7 57.4 58c9-10.9 16-21.4 22.6-34 4.8-9.7 8.4-14 0-23ZM247 39a74 74 0 0 0-13 8.4c-2.6 2-5.7 4.2-7.9 6.6-4 4.4-6.2 11.2 0 14.8 3 1.8 8.5 2.2 11.9 2.2h24c2.5 0 5.5.1 7.7-1.2 3.1-1.9 4.5-5.5 5.3-8.8h-41l16-11.3c2.4-1.7 6.6-4.2 8-6.8 2.7-5.5-4.7-9.3-4.4-14.9.5-7.7 12.8-14.3 19.4-16 3.4-1 5.6-1 9-1-3.4 10-12 11.3-18 19 2.5 1.2 6.2 3.2 9 2.8 7.1-1.2 25.5-18.4 14.8-28.5-5.4-5-15.6-2.8-21.8-.6-10.2 3.6-21.6 10.5-22.8 22.3-.5 5 1.5 8.8 3.8 13Zm52 24h-9l15.4-36L313 6c-2.7 0-6.2-.3-8.4 1.6-1.6 1.5-5.5 10.8-6.6 13.4l-11.8 29c-1.5 3.6-5.4 12.3-4.7 16 1 4.6 9.7 6.1 13.3 4 2.5-1.5 3.3-4.5 4.2-7Zm-198 0-14-1c3.4-1.6 6.9-3 10-5.1 11.1-7.4 11.8-17 2-18.6-13.2-2-27.5 13.8-23.3 26.7.6 2 1.6 3.6 3.5 4.5 3.3 2 16.4 2.3 19.3 0 1.9-1.9 2.1-4.2 2.5-6.5Zm42-16c-9.2-2.5-7-8.8-16-8.8-12 0-21 15.3-18.4 24.8 2.6 9.3 14.4 9.6 21.3 4.2 3.3-2.6 4-4.8 5.9-8.2 3.6-6.3 4.6-4 7.2-12Zm17-9-7.5 2.7-5 9.3-8.5 21c2.5 0 6.4.3 8.5-1.2 1.7-1 4.7-6.7 6.3-8.8A45 45 0 0 1 168 48c-1.8 3.9-8 16-6.4 19.7 1.5 3.5 10 4.3 12.8 2.3 2.1-1.6 2.3-4.6 2.6-7h-6c1.6-4.6 7.3-15 6.6-19-2-11.2-17 2-20.6 5 1.6-3.7 4-7 3-11Zm28 10h23l5.3-1 3.7-7h-23l-5.3 1-3.7 7Zm-90-3a24.4 24.4 0 0 1-16 14c2.5-7.9 7.6-13.1 16-14Zm28 1c.5 4.4.8 4.9 4 8-.8 1.7-1.5 3.4-2.7 4.9-7.2 9.2-15.6.2-8.6-8.8 2.2-2.9 4-3.4 7.3-4.1ZM82 59v1l-1-1h1Z"/></svg>`;
+
+
+var // A private object that holds some default values
+_default = /*#__PURE__*/ new WeakMap(), // Create these private variables to be updated later in the connected hook
+_neonShadow = /*#__PURE__*/ new WeakMap(), _neon = /*#__PURE__*/ new WeakMap(), // Private Methods for internal component settings
 // Updated the filter that is applied to the neonShadow::after pseudo element
-_updateFilter = new WeakSet(), // TODO: These functions need to be re-evaluated, users may want to set a width or height of 0
-// Checks that the neon-el has a width greater than zero
-_hasWidth = new WeakSet(), // Checks that the neon-el has a height greater than zero
-_hasHeight = new WeakSet();
-class $c38b013c361dbfdf$var$Neon extends HTMLElement {
+_updateFilter = /*#__PURE__*/ new WeakSet();
+class $c38b013c361dbfdf$var$NeonEl extends HTMLElement {
     // Set up to watch changes on these attributes
     static get observedAttributes() {
         return [
             "src",
+            "alt",
             "margin",
             "width",
             "height",
@@ -596,27 +620,26 @@ class $c38b013c361dbfdf$var$Neon extends HTMLElement {
         ];
     }
     connectedCallback() {
-        $c7458e7a3415e664$export$2e2bcd8739ae039(this, _neon, [
-            ...this.shadowRoot.styleSheets[0].cssRules
-        ].find((rule)=>rule.selectorText === ".neon"
-        ).style);
-        $c7458e7a3415e664$export$2e2bcd8739ae039(this, _neonShadow, [
-            ...this.shadowRoot.styleSheets[0].cssRules
-        ].find((rule)=>rule.selectorText === ".neonShadow::after"
-        ).style);
-        $c7458e7a3415e664$export$2e2bcd8739ae039(this, _root, this.shadowRoot.querySelector(".neon"));
-        // If attributes aren't set by the user, set their defaults
-        if (!this.hasAttribute("src") && this.shadowRoot.querySelector("slot").assignedNodes().length <= 0) this.src = "./img/neon-el.png";
-        if (!this.hasAttribute("blur-amt")) this.blurAmt = $5c90f01a1e93ad01$export$2e2bcd8739ae039(this, _default).blurAmt;
-        if (!this.hasAttribute("width")) this.width = $2eec7714a30d92b0$export$2e2bcd8739ae039(this, _hasWidth, hasWidth).call(this) ? $5c90f01a1e93ad01$export$2e2bcd8739ae039(this, _default).width : "150px";
-        if (!this.hasAttribute("height")) this.height = $2eec7714a30d92b0$export$2e2bcd8739ae039(this, _hasHeight, hasHeight).call(this) ? $5c90f01a1e93ad01$export$2e2bcd8739ae039(this, _default).height : "150px";
-        if (!this.hasAttribute("margin")) this.margin = $5c90f01a1e93ad01$export$2e2bcd8739ae039(this, _default).margin;
-        if (!this.hasAttribute("font-compensation")) this.fontCompensation = $5c90f01a1e93ad01$export$2e2bcd8739ae039(this, _default).fontCompensation;
-        // Add an event listener for when the slot changes,
-        // To copy the slot contents as an image and set as a blurred background image
-        //! Need to figure out a way to prevent this from causing multiple
-        //! events to be processed when the text node is swapped
-        this.shadowRoot.querySelector("slot").addEventListener("slotchange", $549e0f202f0d259c$export$7a2bdede98851ac5.bind(this));
+        if (this.isConnected) {
+            $c7458e7a3415e664$export$2e2bcd8739ae039(this, _neon, [
+                ...this.shadowRoot.styleSheets[0].cssRules
+            ].find((rule)=>rule.selectorText === ".neon"
+            ).style);
+            $c7458e7a3415e664$export$2e2bcd8739ae039(this, _neonShadow, [
+                ...this.shadowRoot.styleSheets[0].cssRules
+            ].find((rule)=>rule.selectorText === ".neonShadow::after"
+            ).style);
+            // If necessary attributes/properties aren't set, set their defaults
+            if (!this.hasAttribute("src") && this.shadowRoot.querySelector("slot").assignedNodes().length <= 0) this.src = $7f7b1cf2d569a3ce$export$2e2bcd8739ae039;
+            if (!this.hasAttribute("blur-amt")) this.blurAmt = $5c90f01a1e93ad01$export$2e2bcd8739ae039(this, _default).blurAmt;
+            $5c90f01a1e93ad01$export$2e2bcd8739ae039(this, _neon).margin = this.margin;
+            $5c90f01a1e93ad01$export$2e2bcd8739ae039(this, _neon).width = this.width;
+            $5c90f01a1e93ad01$export$2e2bcd8739ae039(this, _neon).height = this.height;
+            // Add an event listener for when the slot changes,
+            // To copy the slot contents as an image and set as a blurred background image
+            //! The "slotchange" event will fire multiple times when a text node is the slotted node because the text node will be removed, wrapped, and then added again for the image to be generated, this is mitigated in handler.js
+            this.shadowRoot.querySelector("slot").addEventListener("slotchange", $549e0f202f0d259c$export$7a2bdede98851ac5.bind(this));
+        }
     }
     // Processes the observed/watched attributes as they are changed
     attributeChangedCallback(name, o, n) {
@@ -637,6 +660,8 @@ class $c38b013c361dbfdf$var$Neon extends HTMLElement {
                 $5c90f01a1e93ad01$export$2e2bcd8739ae039(this, _neon).height = this.height;
                 break;
             case "font-compensation":
+                // If the font-compensation attribute is updated,
+                // dispatch the slotchange event
                 if (o && o !== n) {
                     this.fontCompensation = n;
                     this.shadowRoot.querySelector("slot").dispatchEvent(new Event("slotchange"));
@@ -650,6 +675,13 @@ class $c38b013c361dbfdf$var$Neon extends HTMLElement {
     set src(n) {
         this.setAttribute("src", n);
     }
+    get alt() {
+        if (!this.hasAttribute("alt")) return "";
+        return this.getAttribute("alt");
+    }
+    set alt(n) {
+        this.setAttribute("alt", n);
+    }
     get blurAmt() {
         return this.getAttribute("blur-amt");
     }
@@ -657,24 +689,28 @@ class $c38b013c361dbfdf$var$Neon extends HTMLElement {
         this.setAttribute("blur-amt", n);
     }
     get margin() {
+        if (!this.hasAttribute("margin")) return $5c90f01a1e93ad01$export$2e2bcd8739ae039(this, _default).margin;
         return this.getAttribute("margin");
     }
     set margin(n) {
         this.setAttribute("margin", n);
     }
     get width() {
+        if (!this.hasAttribute("width")) return $5c90f01a1e93ad01$export$2e2bcd8739ae039(this, _default).width;
         return this.getAttribute("width");
     }
     set width(n) {
         this.setAttribute("width", n);
     }
     get height() {
+        if (!this.hasAttribute("height")) return $5c90f01a1e93ad01$export$2e2bcd8739ae039(this, _default).height;
         return this.getAttribute("height");
     }
     set height(n) {
         this.setAttribute("height", n);
     }
     get fontCompensation() {
+        if (!this.hasAttribute("font-compensation")) return $5c90f01a1e93ad01$export$2e2bcd8739ae039(this, _default).fontCompensation;
         return parseInt(this.getAttribute("font-compensation"));
     }
     set fontCompensation(n) {
@@ -685,8 +721,8 @@ class $c38b013c361dbfdf$var$Neon extends HTMLElement {
     }
     constructor(){
         super();
-        // A private object that holds some default values
-        _default.set(this, {
+        $9cec2274b1d86876$export$2e2bcd8739ae039(this, _updateFilter);
+        $a207a3ac25b1c338$export$2e2bcd8739ae039(this, _default, {
             writable: true,
             value: {
                 blurAmt: 20,
@@ -696,98 +732,40 @@ class $c38b013c361dbfdf$var$Neon extends HTMLElement {
                 fontCompensation: 0
             }
         });
-        _filter.set(this, {
-            writable: true,
-            value: `drop-shadow(0px 0px 10px rgba(0, 0, 0, 0.5)) blur(${$5c90f01a1e93ad01$export$2e2bcd8739ae039(this, _default).blurAmt}px)`
-        });
-        // Create these private variables to be updated later in the connected hook
-        _neonShadow.set(this, {
+        $a207a3ac25b1c338$export$2e2bcd8739ae039(this, _neonShadow, {
             writable: true,
             value: null
         });
-        _neon.set(this, {
+        $a207a3ac25b1c338$export$2e2bcd8739ae039(this, _neon, {
             writable: true,
             value: null
         });
-        _root.set(this, {
-            writable: true,
-            value: null
-        });
-        _updateFilter.add(this);
-        _hasWidth.add(this);
-        _hasHeight.add(this);
-        this.neonId = $c38b013c361dbfdf$var$Neon.count;
-        $c38b013c361dbfdf$var$Neon.count = $c38b013c361dbfdf$var$Neon.count + 1;
-        const css = `
-<style>
-      .neon {
-        margin: ${$5c90f01a1e93ad01$export$2e2bcd8739ae039(this, _default).margin};
-        width: ${$5c90f01a1e93ad01$export$2e2bcd8739ae039(this, _default).width};
-        height: ${$5c90f01a1e93ad01$export$2e2bcd8739ae039(this, _default).height};
-        display: grid;
-        justify-content: center;
-        align-content: center;
-        background-position: center center;
-        background-repeat: no-repeat;
-        background-size: contain;
-      }
-
-      .neonShadow {
-        position: relative;
-      }
-
-      .neonShadow::after {
-        content: "";
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        background: inherit;
-        background-position: center center;
-        filter: ${$5c90f01a1e93ad01$export$2e2bcd8739ae039(this, _filter)};
-        z-index: -1;
-
-        /* animation time! */
-        animation: oscillate 1s cubic-bezier(0.17, 0.67, 0.45, 1.32) infinite alternate;
-      }
-
-      @keyframes oscillate {
-        from {
-          transform: scale(1, 1);
-        }
-
-        to {
-          transform: scale(1.2, 1.2);
-        }
-      }
-</style>
-`;
-        $c38b013c361dbfdf$var$template.innerHTML = `
-      ${css}
-      ${$c38b013c361dbfdf$var$html}
-      `;
+        // Keeps track of the different instances of Neon-El
+        this.neonId = $c38b013c361dbfdf$var$NeonEl.count;
+        $c38b013c361dbfdf$var$NeonEl.count = $c38b013c361dbfdf$var$NeonEl.count + 1;
+        // Create the Template and Style elements
+        const template = document.createElement("template");
+        const style = document.createElement("style");
+        // Add the imported html for the template structure
+        template.innerHTML = $1b07835e6369f783$export$2e2bcd8739ae039;
+        // Add the imported CSS to the created style element
+        style.textContent = (/*@__PURE__*/$parcel$interopDefault($b234ea392e67ea5e$exports));
+        // Create the shadowRoot for the component using the created template
         this.attachShadow({
             mode: "open"
-        }).appendChild($c38b013c361dbfdf$var$template.content.cloneNode(true));
+        }).appendChild(template.content.cloneNode(true));
+        // Append the created styles to the shadowRoot
+        this.shadowRoot.appendChild(style);
     }
 }
-$cfef344cd38c105c$export$2e2bcd8739ae039($c38b013c361dbfdf$var$Neon, "count", 0);
-var _default = new WeakMap();
-var _filter = new WeakMap();
-var _neonShadow = new WeakMap();
-var _neon = new WeakMap();
-var _root = new WeakMap();
+// Variable will count the number of NeonEls created and use it as an ID
+$cfef344cd38c105c$export$2e2bcd8739ae039($c38b013c361dbfdf$var$NeonEl, "count", 0);
 function updateFilter() {
-    this.filter = `drop-shadow(0px 0px 10px rgba(0, 0, 0, 0.5)) blur(${this.blurAmt}px)`;
-    $5c90f01a1e93ad01$export$2e2bcd8739ae039(this, _neonShadow).filter = this.filter;
+    let filter = `drop-shadow(0px 0px 10px rgba(0, 0, 0, 0.5)) blur(${this.blurAmt}px)`;
+    $5c90f01a1e93ad01$export$2e2bcd8739ae039(this, _neonShadow).filter = filter;
 }
-function hasWidth() {
-    return getComputedStyle($5c90f01a1e93ad01$export$2e2bcd8739ae039(this, _root)).getPropertyValue("width") !== "0px";
-}
-function hasHeight() {
-    return getComputedStyle($5c90f01a1e93ad01$export$2e2bcd8739ae039(this, _root)).getPropertyValue("height") !== "0px";
-}
-customElements.define("neon-el", $c38b013c361dbfdf$var$Neon);
-var $c38b013c361dbfdf$export$2e2bcd8739ae039 = $c38b013c361dbfdf$var$Neon;
+customElements.define("neon-el", $c38b013c361dbfdf$var$NeonEl);
+var $c38b013c361dbfdf$export$2e2bcd8739ae039 = $c38b013c361dbfdf$var$NeonEl;
 
 
 export {$c38b013c361dbfdf$export$2e2bcd8739ae039 as default};

@@ -1,13 +1,11 @@
 import { makeImage } from "./handlers.js";
-
-const template = document.createElement("template");
-
-const html = `<div class="neonShadow neon"><slot></slot></div>`;
-
-class Neon extends HTMLElement {
+import html from "./template.js";
+import css from "bundle-text:./style.css";
+import defaultSVG from "./defaultSVG.js";
+class NeonEl extends HTMLElement {
   // Set up to watch changes on these attributes
   static get observedAttributes() {
-    return ["src", "margin", "width", "height", "blur-amt", "font-compensation"];
+    return ["src", "alt", "margin", "width", "height", "blur-amt", "font-compensation"];
   }
 
   // Variable will count the number of NeonEls created and use it as an ID
@@ -22,106 +20,59 @@ class Neon extends HTMLElement {
     fontCompensation: 0,
   };
 
-  #filter = `drop-shadow(0px 0px 10px rgba(0, 0, 0, 0.5)) blur(${this.#default.blurAmt}px)`;
-
   // Create these private variables to be updated later in the connected hook
   #neonShadow = null;
   #neon = null;
-  #root = null;
 
   constructor() {
     super();
 
-    this.neonId = Neon.count;
-    Neon.count = Neon.count + 1;
+    // Keeps track of the different instances of Neon-El
+    this.neonId = NeonEl.count;
+    NeonEl.count = NeonEl.count + 1;
 
-    const css = `
-<style>
-      .neon {
-        margin: ${this.#default.margin};
-        width: ${this.#default.width};
-        height: ${this.#default.height};
-        display: grid;
-        justify-content: center;
-        align-content: center;
-        background-position: center center;
-        background-repeat: no-repeat;
-        background-size: contain;
-      }
+    // Create the Template and Style elements
+    const template = document.createElement("template");
+    const style = document.createElement("style");
 
-      .neonShadow {
-        position: relative;
-      }
+    // Add the imported html for the template structure
+    template.innerHTML = html;
+    // Add the imported CSS to the created style element
+    style.textContent = css;
 
-      .neonShadow::after {
-        content: "";
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        background: inherit;
-        background-position: center center;
-        filter: ${this.#filter};
-        z-index: -1;
-
-        /* animation time! */
-        animation: oscillate 1s cubic-bezier(0.17, 0.67, 0.45, 1.32) infinite alternate;
-      }
-
-      @keyframes oscillate {
-        from {
-          transform: scale(1, 1);
-        }
-
-        to {
-          transform: scale(1.2, 1.2);
-        }
-      }
-</style>
-`;
-    template.innerHTML = `
-      ${css}
-      ${html}
-      `;
+    // Create the shadowRoot for the component using the created template
     this.attachShadow({ mode: "open" }).appendChild(template.content.cloneNode(true));
+
+    // Append the created styles to the shadowRoot
+    this.shadowRoot.appendChild(style);
   }
 
   connectedCallback() {
-    // Get the styles of the base component to be updated later
-    this.#neon = [...this.shadowRoot.styleSheets[0].cssRules].find((rule) => rule.selectorText === ".neon").style;
+    if (this.isConnected) {
+      // Get the styles of the base component to be updated later
+      this.#neon = [...this.shadowRoot.styleSheets[0].cssRules].find((rule) => rule.selectorText === ".neon").style;
 
-    // Get the pseudo element styles so they can be updated later
-    this.#neonShadow = [...this.shadowRoot.styleSheets[0].cssRules].find(
-      (rule) => rule.selectorText === ".neonShadow::after"
-    ).style;
+      // Get the pseudo element styles so they can be updated later
+      this.#neonShadow = [...this.shadowRoot.styleSheets[0].cssRules].find(
+        (rule) => rule.selectorText === ".neonShadow::after"
+      ).style;
 
-    // Get the root element
-    this.#root = this.shadowRoot.querySelector(".neon");
+      // If necessary attributes/properties aren't set, set their defaults
+      if (!this.hasAttribute("src") && this.shadowRoot.querySelector("slot").assignedNodes().length <= 0) {
+        this.src = defaultSVG;
+      }
+      if (!this.hasAttribute("blur-amt")) {
+        this.blurAmt = this.#default.blurAmt;
+      }
+      this.#neon.margin = this.margin;
+      this.#neon.width = this.width;
+      this.#neon.height = this.height;
 
-    // If attributes aren't set by the user, set their defaults
-    if (!this.hasAttribute("src") && this.shadowRoot.querySelector("slot").assignedNodes().length <= 0) {
-      this.src = "./img/neon-el.png";
+      // Add an event listener for when the slot changes,
+      // To copy the slot contents as an image and set as a blurred background image
+      //! The "slotchange" event will fire multiple times when a text node is the slotted node because the text node will be removed, wrapped, and then added again for the image to be generated, this is mitigated in handler.js
+      this.shadowRoot.querySelector("slot").addEventListener("slotchange", makeImage.bind(this));
     }
-    if (!this.hasAttribute("blur-amt")) {
-      this.blurAmt = this.#default.blurAmt;
-    }
-    if (!this.hasAttribute("width")) {
-      this.width = this.#hasWidth() ? this.#default.width : "150px";
-    }
-    if (!this.hasAttribute("height")) {
-      this.height = this.#hasHeight() ? this.#default.height : "150px";
-    }
-    if (!this.hasAttribute("margin")) {
-      this.margin = this.#default.margin;
-    }
-    if (!this.hasAttribute("font-compensation")) {
-      this.fontCompensation = this.#default.fontCompensation;
-    }
-
-    // Add an event listener for when the slot changes,
-    // To copy the slot contents as an image and set as a blurred background image
-    //! Need to figure out a way to prevent this from causing multiple
-    //! events to be processed when the text node is swapped
-    this.shadowRoot.querySelector("slot").addEventListener("slotchange", makeImage.bind(this));
   }
 
   // Processes the observed/watched attributes as they are changed
@@ -143,6 +94,8 @@ class Neon extends HTMLElement {
         this.#neon.height = this.height;
         break;
       case "font-compensation":
+        // If the font-compensation attribute is updated,
+        // dispatch the slotchange event
         if (o && o !== n) {
           this.fontCompensation = n;
           this.shadowRoot.querySelector("slot").dispatchEvent(new Event("slotchange"));
@@ -159,6 +112,15 @@ class Neon extends HTMLElement {
     this.setAttribute("src", n);
   }
 
+  get alt() {
+    if (!this.hasAttribute("alt")) return "";
+    return this.getAttribute("alt");
+  }
+
+  set alt(n) {
+    this.setAttribute("alt", n);
+  }
+
   get blurAmt() {
     return this.getAttribute("blur-amt");
   }
@@ -168,6 +130,9 @@ class Neon extends HTMLElement {
   }
 
   get margin() {
+    if (!this.hasAttribute("margin")) {
+      return this.#default.margin;
+    }
     return this.getAttribute("margin");
   }
   set margin(n) {
@@ -175,6 +140,9 @@ class Neon extends HTMLElement {
   }
 
   get width() {
+    if (!this.hasAttribute("width")) {
+      return this.#default.width;
+    }
     return this.getAttribute("width");
   }
   set width(n) {
@@ -182,6 +150,9 @@ class Neon extends HTMLElement {
   }
 
   get height() {
+    if (!this.hasAttribute("height")) {
+      return this.#default.height;
+    }
     return this.getAttribute("height");
   }
   set height(n) {
@@ -189,6 +160,9 @@ class Neon extends HTMLElement {
   }
 
   get fontCompensation() {
+    if (!this.hasAttribute("font-compensation")) {
+      return this.#default.fontCompensation;
+    }
     return parseInt(this.getAttribute("font-compensation"));
   }
   set fontCompensation(n) {
@@ -202,19 +176,9 @@ class Neon extends HTMLElement {
 
   // Updated the filter that is applied to the neonShadow::after pseudo element
   #updateFilter() {
-    this.filter = `drop-shadow(0px 0px 10px rgba(0, 0, 0, 0.5)) blur(${this.blurAmt}px)`;
-    this.#neonShadow.filter = this.filter;
-  }
-
-  // TODO: These functions need to be re-evaluated, users may want to set a width or height of 0
-  // Checks that the neon-el has a width greater than zero
-  #hasWidth() {
-    return getComputedStyle(this.#root).getPropertyValue("width") !== "0px";
-  }
-  // Checks that the neon-el has a height greater than zero
-  #hasHeight() {
-    return getComputedStyle(this.#root).getPropertyValue("height") !== "0px";
+    let filter = `drop-shadow(0px 0px 10px rgba(0, 0, 0, 0.5)) blur(${this.blurAmt}px)`;
+    this.#neonShadow.filter = filter;
   }
 }
-customElements.define("neon-el", Neon);
-export default Neon;
+customElements.define("neon-el", NeonEl);
+export default NeonEl;

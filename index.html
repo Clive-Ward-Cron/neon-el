@@ -93,8 +93,8 @@
       }
 
       neon-el {
-        /* width: 150px;
-        height: 150px; */
+        min-width: 150px;
+        height: 150px;
         font-family: "flottflott";
         color: white;
         font-size: 2.2rem;
@@ -118,12 +118,13 @@
 
     <div class="neon-container">
       <neon-el id="start"></neon-el>
-      <neon-el
+      <neon-el font-compensation="10"
         ><div>
           <p><span>TEST</span></p>
         </div></neon-el
       >
       <neon-el>Another Test</neon-el>
+      <neon-el alt="Another Test To Try">Another Test To Try</neon-el>
       <neon-el font-compensation="10">A B C</neon-el>
       <neon-el><p style="color: orange">TEST 4</p></neon-el>
       <div class="test"><p>A B C</p></div>

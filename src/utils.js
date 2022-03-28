@@ -1,3 +1,8 @@
+/**
+ * @description Takes a node and returns an object created from its CSSStyleDeclaration that comes from getComputedStyle(). If the node doesn't have a CSSStyleDeclaration it returns an empty object
+ * @param {Node} el The node that will have the CSSStyleDeclaration returned as an object
+ * @returns An object containing all styles in the CSSStyleDeclaration
+ */
 export function getComputedStyleObject(el) {
   // Get the Elements computed style declaration
   try {
@@ -25,6 +30,11 @@ export function getComputedStyleObject(el) {
   }
 }
 
+/**
+ * @description Takes a Node and checks if its a text node or an element. If it's a Text Node then it will be wrapped in a span element before being returned.
+ * @param {Node} node The node to be checked
+ * @returns The span wrapped Text Node or the original Element Node
+ */
 export function wrapIfTextNode(node) {
   // Check if the passed node is a Text Node
   // If it is, wrap it in a span
