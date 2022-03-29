@@ -57,3 +57,18 @@ export function wrapIfTextNode(node) {
     return node;
   }
 }
+
+/**
+ * @description Takes in any value and returns it as a pure Boolean for use on a Boolean Element attribute where a value of "" should be true.
+ * @param {any} v The value to be converted to a Boolean
+ * @returns Boolean
+ */
+export function parseElementAttrBool(v) {
+  if (v === "false") {
+    return false;
+  } else if (v === "") {
+    return true;
+  } else {
+    return Boolean(v);
+  }
+}

@@ -536,6 +536,11 @@ function $4c225ee090a8f350$export$39727932d807f83e(node) {
         return newSpan;
     } else return node;
 }
+function $4c225ee090a8f350$export$4628b2788d46093(v) {
+    if (v === "false") return false;
+    else if (v === "") return true;
+    else return Boolean(v);
+}
 
 
 function $549e0f202f0d259c$export$7a2bdede98851ac5(e) {
@@ -579,10 +584,14 @@ function $549e0f202f0d259c$export$7a2bdede98851ac5(e) {
             // Remove the inline base64 font-face style from the returned SVG data
             // and set it as the background image
             this.src = dataURL.replace(/<style>@font-face.*<\/style>/, "").replace(/%0A/g, "");
-            // Adjust the width and height of the component
+            // Adjust the width and height if needed of the component
             // or the returned image won't display
-            this.width = rectWidth + parseInt(elStyles.marginRight.replace("px")) + parseInt(elStyles.marginLeft.replace("px")) + "px";
-            this.height = rectHeight + parseInt(elStyles.marginTop.replace("px")) + parseInt(elStyles.marginBottom.replace("px")) + "px";
+            const adjustedWidth = rectWidth + parseInt(elStyles.marginRight.replace("px")) + parseInt(elStyles.marginLeft.replace("px"));
+            const adjustedHeight = rectHeight + parseInt(elStyles.marginTop.replace("px")) + parseInt(elStyles.marginBottom.replace("px"));
+            if (!this.noAdjust) {
+                this.width = `${adjustedWidth}px`;
+                this.height = `${adjustedHeight}px`;
+            }
             // Don't display the original slotted element
             // or there will be an ugly overlay
             el.style.opacity = 0;
@@ -601,9 +610,10 @@ $b234ea392e67ea5e$exports = ".neon {\n  margin: inherit;\n  width: inherit;\n  h
 var $7f7b1cf2d569a3ce$export$2e2bcd8739ae039 = `data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 314 72"><defs><linearGradient id="a" x1="0%" x2="100%" y1="0%" y2="0%"><stop offset="0%" stop-color="%239815c3"/><stop offset="100%" stop-color="%237206ff"/></linearGradient></defs><path fill="url(%23a)" stroke="none" d="M79.9 1a283.8 283.8 0 0 1-20.6 39c-4 6.2-7.2 11.5-13.3 16 .1-16.7 7.8-38.5 14-54L48.4 5 33.7 28 13.5 56 1 71l11.8-1.2 9-9.8L42 31c-1.5 8.1-5 21.3-5 29 0 3.4-1 11.3 4 11.3S54.3 61.7 57.4 58c9-10.9 16-21.4 22.6-34 4.8-9.7 8.4-14 0-23ZM247 39a74 74 0 0 0-13 8.4c-2.6 2-5.7 4.2-7.9 6.6-4 4.4-6.2 11.2 0 14.8 3 1.8 8.5 2.2 11.9 2.2h24c2.5 0 5.5.1 7.7-1.2 3.1-1.9 4.5-5.5 5.3-8.8h-41l16-11.3c2.4-1.7 6.6-4.2 8-6.8 2.7-5.5-4.7-9.3-4.4-14.9.5-7.7 12.8-14.3 19.4-16 3.4-1 5.6-1 9-1-3.4 10-12 11.3-18 19 2.5 1.2 6.2 3.2 9 2.8 7.1-1.2 25.5-18.4 14.8-28.5-5.4-5-15.6-2.8-21.8-.6-10.2 3.6-21.6 10.5-22.8 22.3-.5 5 1.5 8.8 3.8 13Zm52 24h-9l15.4-36L313 6c-2.7 0-6.2-.3-8.4 1.6-1.6 1.5-5.5 10.8-6.6 13.4l-11.8 29c-1.5 3.6-5.4 12.3-4.7 16 1 4.6 9.7 6.1 13.3 4 2.5-1.5 3.3-4.5 4.2-7Zm-198 0-14-1c3.4-1.6 6.9-3 10-5.1 11.1-7.4 11.8-17 2-18.6-13.2-2-27.5 13.8-23.3 26.7.6 2 1.6 3.6 3.5 4.5 3.3 2 16.4 2.3 19.3 0 1.9-1.9 2.1-4.2 2.5-6.5Zm42-16c-9.2-2.5-7-8.8-16-8.8-12 0-21 15.3-18.4 24.8 2.6 9.3 14.4 9.6 21.3 4.2 3.3-2.6 4-4.8 5.9-8.2 3.6-6.3 4.6-4 7.2-12Zm17-9-7.5 2.7-5 9.3-8.5 21c2.5 0 6.4.3 8.5-1.2 1.7-1 4.7-6.7 6.3-8.8A45 45 0 0 1 168 48c-1.8 3.9-8 16-6.4 19.7 1.5 3.5 10 4.3 12.8 2.3 2.1-1.6 2.3-4.6 2.6-7h-6c1.6-4.6 7.3-15 6.6-19-2-11.2-17 2-20.6 5 1.6-3.7 4-7 3-11Zm28 10h23l5.3-1 3.7-7h-23l-5.3 1-3.7 7Zm-90-3a24.4 24.4 0 0 1-16 14c2.5-7.9 7.6-13.1 16-14Zm28 1c.5 4.4.8 4.9 4 8-.8 1.7-1.5 3.4-2.7 4.9-7.2 9.2-15.6.2-8.6-8.8 2.2-2.9 4-3.4 7.3-4.1ZM82 59v1l-1-1h1Z"/></svg>`;
 
 
+
 var // A private object that holds some default values
 _default = /*#__PURE__*/ new WeakMap(), // Create these private variables to be updated later in the connected hook
-_neonShadow = /*#__PURE__*/ new WeakMap(), _neon = /*#__PURE__*/ new WeakMap(), // Private Methods for internal component settings
+_neonShadow = /*#__PURE__*/ new WeakMap(), _neon = /*#__PURE__*/ new WeakMap(), _slot = /*#__PURE__*/ new WeakMap(), // Private Methods for internal component settings
 // Updated the filter that is applied to the neonShadow::after pseudo element
 _updateFilter = /*#__PURE__*/ new WeakSet();
 class $c38b013c361dbfdf$var$NeonEl extends HTMLElement {
@@ -616,7 +626,8 @@ class $c38b013c361dbfdf$var$NeonEl extends HTMLElement {
             "width",
             "height",
             "blur-amt",
-            "font-compensation"
+            "font-compensation",
+            "no-adjust"
         ];
     }
     connectedCallback() {
@@ -629,6 +640,7 @@ class $c38b013c361dbfdf$var$NeonEl extends HTMLElement {
                 ...this.shadowRoot.styleSheets[0].cssRules
             ].find((rule)=>rule.selectorText === ".neonShadow::after"
             ).style);
+            $c7458e7a3415e664$export$2e2bcd8739ae039(this, _slot, this.shadowRoot.querySelector("slot"));
             // If necessary attributes/properties aren't set, set their defaults
             if (!this.hasAttribute("src") && this.shadowRoot.querySelector("slot").assignedNodes().length <= 0) this.src = $7f7b1cf2d569a3ce$export$2e2bcd8739ae039;
             if (!this.hasAttribute("blur-amt")) this.blurAmt = $5c90f01a1e93ad01$export$2e2bcd8739ae039(this, _default).blurAmt;
@@ -638,7 +650,7 @@ class $c38b013c361dbfdf$var$NeonEl extends HTMLElement {
             // Add an event listener for when the slot changes,
             // To copy the slot contents as an image and set as a blurred background image
             //! The "slotchange" event will fire multiple times when a text node is the slotted node because the text node will be removed, wrapped, and then added again for the image to be generated, this is mitigated in handler.js
-            this.shadowRoot.querySelector("slot").addEventListener("slotchange", $549e0f202f0d259c$export$7a2bdede98851ac5.bind(this));
+            $5c90f01a1e93ad01$export$2e2bcd8739ae039(this, _slot).addEventListener("slotchange", $549e0f202f0d259c$export$7a2bdede98851ac5.bind(this));
         }
     }
     // Processes the observed/watched attributes as they are changed
@@ -659,12 +671,21 @@ class $c38b013c361dbfdf$var$NeonEl extends HTMLElement {
             case "height":
                 $5c90f01a1e93ad01$export$2e2bcd8739ae039(this, _neon).height = this.height;
                 break;
+            case "no-adjust":
+                // If the no-adjust property is changed,
+                // regenerate the image
+                const parsed = $4c225ee090a8f350$export$4628b2788d46093(n);
+                if (o && $4c225ee090a8f350$export$4628b2788d46093(o) !== parsed) {
+                    this.noAdjust = parsed;
+                    $5c90f01a1e93ad01$export$2e2bcd8739ae039(this, _slot).dispatchEvent(new Event("slotchange"));
+                }
+                break;
             case "font-compensation":
                 // If the font-compensation attribute is updated,
                 // dispatch the slotchange event
                 if (o && o !== n) {
                     this.fontCompensation = n;
-                    this.shadowRoot.querySelector("slot").dispatchEvent(new Event("slotchange"));
+                    $5c90f01a1e93ad01$export$2e2bcd8739ae039(this, _slot).dispatchEvent(new Event("slotchange"));
                 }
         }
     }
@@ -719,6 +740,28 @@ class $c38b013c361dbfdf$var$NeonEl extends HTMLElement {
         if (Number.isNaN(compensation)) compensation = 0;
         this.setAttribute("font-compensation", compensation);
     }
+    // Getters and Setters for noAdjust (no-adjust)
+    // behaves similarly to regular HTML Boolean attributes
+    // where simply having the attribute name evaluates to true
+    get noAdjust() {
+        // If it isn't there, its false
+        // If it is there with no value, its true
+        if (!this.hasAttribute("no-adjust")) return false;
+        // Otherwise parse the value as a Boolean and return it.
+        return $4c225ee090a8f350$export$4628b2788d46093(this.getAttribute("no-adjust"));
+    }
+    set noAdjust(n) {
+        // Wanted to keep the utility function parseElementAttrBool
+        // cleaner so I am checking and short circuting at the start
+        // if the value is an empty string here instead of binding
+        // 'this' to the function and doing it there.
+        if (n === "") {
+            this.setAttribute("no-adjust", "");
+            return;
+        }
+        const bool = $4c225ee090a8f350$export$4628b2788d46093(n);
+        this.setAttribute("no-adjust", bool);
+    }
     constructor(){
         super();
         $9cec2274b1d86876$export$2e2bcd8739ae039(this, _updateFilter);
@@ -737,6 +780,10 @@ class $c38b013c361dbfdf$var$NeonEl extends HTMLElement {
             value: null
         });
         $a207a3ac25b1c338$export$2e2bcd8739ae039(this, _neon, {
+            writable: true,
+            value: null
+        });
+        $a207a3ac25b1c338$export$2e2bcd8739ae039(this, _slot, {
             writable: true,
             value: null
         });

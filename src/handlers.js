@@ -60,15 +60,16 @@ export function makeImage(e) {
         // Remove the inline base64 font-face style from the returned SVG data
         // and set it as the background image
         this.src = dataURL.replace(/<style>@font-face.*<\/style>/, "").replace(/%0A/g, "");
-        // Adjust the width and height of the component
+        // Adjust the width and height if needed of the component
         // or the returned image won't display
-        this.width =
-          rectWidth + parseInt(elStyles.marginRight.replace("px")) + parseInt(elStyles.marginLeft.replace("px")) + "px";
-        this.height =
-          rectHeight +
-          parseInt(elStyles.marginTop.replace("px")) +
-          parseInt(elStyles.marginBottom.replace("px")) +
-          "px";
+        const adjustedWidth =
+          rectWidth + parseInt(elStyles.marginRight.replace("px")) + parseInt(elStyles.marginLeft.replace("px"));
+        const adjustedHeight =
+          rectHeight + parseInt(elStyles.marginTop.replace("px")) + parseInt(elStyles.marginBottom.replace("px"));
+        if (!this.noAdjust) {
+          this.width = `${adjustedWidth}px`;
+          this.height = `${adjustedHeight}px`;
+        }
 
         // Don't display the original slotted element
         // or there will be an ugly overlay

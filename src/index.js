@@ -2,10 +2,11 @@ import { makeImage } from "./handlers.js";
 import html from "./template.js";
 import css from "bundle-text:./style.css";
 import defaultSVG from "./defaultSVG.js";
+import { parseElementAttrBool } from "./utils.js";
 class NeonEl extends HTMLElement {
   // Set up to watch changes on these attributes
   static get observedAttributes() {
-    return ["src", "alt", "margin", "width", "height", "blur-amt", "font-compensation"];
+    return ["src", "alt", "margin", "width", "height", "blur-amt", "font-compensation", "no-adjust"];
   }
 
   // Variable will count the number of NeonEls created and use it as an ID
@@ -23,6 +24,7 @@ class NeonEl extends HTMLElement {
   // Create these private variables to be updated later in the connected hook
   #neonShadow = null;
   #neon = null;
+  #slot = null;
 
   constructor() {
     super();
@@ -57,6 +59,9 @@ class NeonEl extends HTMLElement {
         (rule) => rule.selectorText === ".neonShadow::after"
       ).style;
 
+      // Set the slot private variable for easier use
+      this.#slot = this.shadowRoot.querySelector("slot");
+
       // If necessary attributes/properties aren't set, set their defaults
       if (!this.hasAttribute("src") && this.shadowRoot.querySelector("slot").assignedNodes().length <= 0) {
         this.src = defaultSVG;
@@ -71,7 +76,7 @@ class NeonEl extends HTMLElement {
       // Add an event listener for when the slot changes,
       // To copy the slot contents as an image and set as a blurred background image
       //! The "slotchange" event will fire multiple times when a text node is the slotted node because the text node will be removed, wrapped, and then added again for the image to be generated, this is mitigated in handler.js
-      this.shadowRoot.querySelector("slot").addEventListener("slotchange", makeImage.bind(this));
+      this.#slot.addEventListener("slotchange", makeImage.bind(this));
     }
   }
 
@@ -93,12 +98,21 @@ class NeonEl extends HTMLElement {
       case "height":
         this.#neon.height = this.height;
         break;
+      case "no-adjust":
+        // If the no-adjust property is changed,
+        // regenerate the image
+        const parsed = parseElementAttrBool(n);
+        if (o && parseElementAttrBool(o) !== parsed) {
+          this.noAdjust = parsed;
+          this.#slot.dispatchEvent(new Event("slotchange"));
+        }
+        break;
       case "font-compensation":
         // If the font-compensation attribute is updated,
         // dispatch the slotchange event
         if (o && o !== n) {
           this.fontCompensation = n;
-          this.shadowRoot.querySelector("slot").dispatchEvent(new Event("slotchange"));
+          this.#slot.dispatchEvent(new Event("slotchange"));
         }
     }
   }
@@ -170,6 +184,30 @@ class NeonEl extends HTMLElement {
     let compensation = parseInt(n);
     if (Number.isNaN(compensation)) compensation = 0;
     this.setAttribute("font-compensation", compensation);
+  }
+
+  // Getters and Setters for noAdjust (no-adjust)
+  // behaves similarly to regular HTML Boolean attributes
+  // where simply having the attribute name evaluates to true
+  get noAdjust() {
+    // If it isn't there, its false
+    // If it is there with no value, its true
+    if (!this.hasAttribute("no-adjust")) return false;
+
+    // Otherwise parse the value as a Boolean and return it.
+    return parseElementAttrBool(this.getAttribute("no-adjust"));
+  }
+  set noAdjust(n) {
+    // Wanted to keep the utility function parseElementAttrBool
+    // cleaner so I am checking and short circuting at the start
+    // if the value is an empty string here instead of binding
+    // 'this' to the function and doing it there.
+    if (n === "") {
+      this.setAttribute("no-adjust", "");
+      return;
+    }
+    const bool = parseElementAttrBool(n);
+    this.setAttribute("no-adjust", bool);
   }
 
   // Private Methods for internal component settings
